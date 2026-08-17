@@ -1,0 +1,32 @@
+---
+description: HS Group enterprise design system — Homepage is the single source of truth
+alwaysApply: true
+---
+
+# HS Group Design System
+
+**Homepage is the law.** Extend only. Never redesign. Never invent a new visual language.
+
+## Do
+- Reuse Homepage: `container-wide`, `section-label`, `section-title`, `btn-primary`, `btn-secondary`, cards (`rounded-[28px]`), shadows, hover lift, GSAP fade-up/scroll reveal
+- Spacing: mobile `72px`, tablet `100px`, desktop `140px` section padding; grid gap `32px`, card gap `24px`
+- Colors: engineering blue `#218cce`, accent green, navy, white, light gray borders only
+- Icons: Lucide only, minimal, enterprise tone
+- Images: premium engineering photography, consistent cinematic grading
+- Motion: fade up, slide up, scale, image zoom, counter, parallax, light sweep, hover lift — subtle only
+- Alternate layouts per page: image left/right, centered, editorial, split
+
+## Do Not
+- Redesign approved sections or layout structure
+- Change typography, colors, radius, buttons, containers, or spacing scale
+- Introduce glassmorphism, neumorphism, SaaS/agency/startup UI patterns
+- Add random gradients, bounce/rotate/flash animations, or new card/button styles
+- Create page-specific design languages
+
+## Before Shipping
+Verify: matches Homepage containers, typography, buttons, cards, shadows, radius, hover, colors, animation, and enterprise feel.
+
+## Reference Files
+- Tokens/utilities: `src/app/globals.css`
+- Layout patterns: `src/components/sections/` (homepage sections)
+- About shared tokens: `src/components/sections/about/constants.ts`

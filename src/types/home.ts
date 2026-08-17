@@ -6,6 +6,7 @@ export interface HeroItem {
   sub_content: string | null;
   image: string | null;
   url: string | null;
+  video: string | null;
   serial_no: number;
 }
 
@@ -28,6 +29,7 @@ export interface FeatureItem {
   icon: string | null;
   title: string;
   short_description: string | null;
+  image: string | null;
 }
 
 export interface PartnerLogo {

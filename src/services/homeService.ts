@@ -57,6 +57,7 @@ function normalizeHero(items: unknown): HeroItem[] {
         sub_content: asString(item.sub_content),
         image: asString(item.image),
         url: asString(item.url),
+        video: asString(item.video),
         serial_no: asNumber(item.serial_no, 0),
       },
     ];
@@ -109,6 +110,7 @@ function normalizeFeatures(items: unknown): FeatureItem[] {
         icon: asString(item.icon),
         title,
         short_description: asString(item.short_description),
+        image: asString(item.image),
       },
     ];
   });
@@ -180,7 +182,8 @@ function splitHeadline(title: string): string[] {
 export function mapHeroSlides(items: HeroItem[]): HeroSlideView[] {
   return items.flatMap((item, index) => {
     const image = toAbsoluteStorageUrl(item.image);
-    if (!image) return [];
+    const video = toAbsoluteStorageUrl(item.video);
+    if (!image && !video) return [];
 
     const title = item.title ?? "";
     const slide: HeroSlideView = {
@@ -188,8 +191,9 @@ export function mapHeroSlides(items: HeroItem[]): HeroSlideView[] {
       title,
       subtitle: item.sub_title ?? undefined,
       description: item.content ?? undefined,
-      image,
+      image: image || video,
       url: item.url,
+      video: video || undefined,
     };
 
     if (index === 0) {
@@ -220,11 +224,24 @@ export function mapAboutCollageImages(about: AboutStats): string[] {
 }
 
 export function mapFeatureCards(items: FeatureItem[]): FeatureCardView[] {
-  return items.map((item) => ({
-    type: "text" as const,
-    title: item.title,
-    description: item.short_description ?? "",
-  }));
+  return items.flatMap((item) => {
+    const cards: FeatureCardView[] = [
+      {
+        type: "text",
+        title: item.title,
+        description: item.short_description ?? "",
+      },
+    ];
+    const image = toAbsoluteStorageUrl(item.image);
+    if (image) {
+      cards.push({
+        type: "image",
+        image,
+        alt: item.title,
+      });
+    }
+    return cards;
+  });
 }
 
 export function mapPartnerLogos(items: PartnerLogo[]): PartnerLogoView[] {

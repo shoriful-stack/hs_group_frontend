@@ -42,7 +42,7 @@ export default function WhyChooseUs({ cards }: { cards?: FeatureCardView[] }) {
           {items.map((card, i) => (
             card.type === "text" ? (
               <motion.article
-                key={card.title}
+                key={`text-${i}-${card.title}`}
                 custom={i}
                 variants={cardVariants}
                 initial="hidden"
@@ -60,7 +60,7 @@ export default function WhyChooseUs({ cards }: { cards?: FeatureCardView[] }) {
               </motion.article>
             ) : (
               <motion.div
-                key={card.alt}
+                key={`image-${i}-${card.alt}`}
                 custom={i}
                 variants={cardVariants}
                 initial="hidden"

@@ -9,6 +9,7 @@ import Logo from "@/components/ui/Logo";
 import ThemeToggle from "@/components/ui/ThemeToggle";
 import MobileOffcanvasMenu from "@/components/layout/MobileOffcanvasMenu";
 import { navLinks } from "@/data/site";
+import { useSiteSettings } from "@/providers/SiteSettingsProvider";
 
 type NavItem = (typeof navLinks)[number];
 
@@ -38,6 +39,7 @@ function NavUnderline({ isActive }: { isActive: boolean }) {
 
 export default function Header() {
   const pathname = usePathname();
+  const settings = useSiteSettings();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
@@ -156,7 +158,7 @@ export default function Header() {
       }`}
     >
       <div className="container-wide flex items-center justify-between px-4 sm:px-6 lg:px-8">
-        <Logo size="md" inverted={!isScrolled} />
+        <Logo size="md" inverted={!isScrolled} src={settings.logoFooter} alt={settings.title} />
 
         <nav ref={dropdownRef} className="hidden items-center lg:flex">
           {navLinks.map((link) => renderNavItem(link))}

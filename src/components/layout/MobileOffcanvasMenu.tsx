@@ -16,11 +16,24 @@ import {
   Facebook,
   Linkedin,
   Youtube,
+  Instagram,
+  Twitter,
+  Link2,
 } from "lucide-react";
 import Logo from "@/components/ui/Logo";
-import { navLinks, products, services, siteConfig } from "@/data/site";
+import { navLinks, products, services } from "@/data/site";
+import { useSiteSettings } from "@/providers/SiteSettingsProvider";
 
 const EASE = [0.22, 0.61, 0.36, 1] as const;
+
+const SOCIAL_ICONS = {
+  facebook: Facebook,
+  linkedin: Linkedin,
+  youtube: Youtube,
+  instagram: Instagram,
+  twitter: Twitter,
+  link: Link2,
+} as const;
 
 /** Simple links shown after Products/Services accordions (excludes Home/About/Products/Services) */
 const mobileAfterAccordions = navLinks.filter(
@@ -46,6 +59,7 @@ export default function MobileOffcanvasMenu({
   triggerRef,
 }: MobileOffcanvasMenuProps) {
   const pathname = usePathname();
+  const settings = useSiteSettings();
   const panelRef = useRef<HTMLDivElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
   const [mounted, setMounted] = useState(false);
@@ -151,10 +165,9 @@ export default function MobileOffcanvasMenu({
               >
                 <X className="h-5 w-5" />
               </button>
-              <Logo size="sm" />
-              <p className="mt-2 text-xs font-medium tracking-wide text-[#5a6478]">
-                Engineering Excellence Since 2010
-              </p>
+              {settings.logoHeader || settings.title ? (
+                <Logo size="sm" src={settings.logoHeader} alt={settings.title} />
+              ) : null}
             </div>
 
             {/* Search */}
@@ -234,26 +247,34 @@ export default function MobileOffcanvasMenu({
 
             {/* Footer CTA */}
             <div className="mt-4 shrink-0 border-t border-[#E9EEF5] pt-5">
-              <div className="mb-4 space-y-2.5 text-sm text-[#5a6478]">
-                <a
-                  href={`tel:${siteConfig.phone.replace(/\s/g, "")}`}
-                  className="flex items-center gap-2.5 transition-colors hover:text-engineering"
-                >
-                  <Phone className="h-4 w-4 shrink-0 text-engineering" />
-                  {siteConfig.phone}
-                </a>
-                <a
-                  href={`mailto:${siteConfig.email}`}
-                  className="flex items-center gap-2.5 transition-colors hover:text-engineering"
-                >
-                  <Mail className="h-4 w-4 shrink-0 text-engineering" />
-                  {siteConfig.email}
-                </a>
-                <p className="flex items-center gap-2.5">
-                  <MapPin className="h-4 w-4 shrink-0 text-engineering" />
-                  {siteConfig.address}
-                </p>
-              </div>
+              {(settings.phone || settings.email || settings.address) ? (
+                <div className="mb-4 space-y-2.5 text-sm text-[#5a6478]">
+                  {settings.phone ? (
+                    <a
+                      href={`tel:${settings.phone.replace(/\s/g, "")}`}
+                      className="flex items-center gap-2.5 transition-colors hover:text-engineering"
+                    >
+                      <Phone className="h-4 w-4 shrink-0 text-engineering" />
+                      {settings.phone}
+                    </a>
+                  ) : null}
+                  {settings.email ? (
+                    <a
+                      href={`mailto:${settings.email}`}
+                      className="flex items-center gap-2.5 transition-colors hover:text-engineering"
+                    >
+                      <Mail className="h-4 w-4 shrink-0 text-engineering" />
+                      {settings.email}
+                    </a>
+                  ) : null}
+                  {settings.address ? (
+                    <p className="flex items-center gap-2.5">
+                      <MapPin className="h-4 w-4 shrink-0 text-engineering" />
+                      {settings.address}
+                    </p>
+                  ) : null}
+                </div>
+              ) : null}
 
               <div className="flex flex-col gap-2.5">
                 <Link
@@ -268,26 +289,30 @@ export default function MobileOffcanvasMenu({
                   onClick={onClose}
                   className="flex h-11 items-center justify-center rounded-2xl border border-[#E9EEF5] text-sm font-semibold text-[#1a2b4a] transition-all duration-300 hover:border-engineering hover:text-engineering"
                 >
-                  Contact HS Group
+                  Contact
                 </Link>
               </div>
 
-              <div className="mt-4 flex justify-center gap-3">
-                {[
-                  { icon: Facebook, href: siteConfig.social.facebook, label: "Facebook" },
-                  { icon: Linkedin, href: siteConfig.social.linkedin, label: "LinkedIn" },
-                  { icon: Youtube, href: siteConfig.social.youtube, label: "YouTube" },
-                ].map(({ icon: Icon, href, label }) => (
-                  <a
-                    key={label}
-                    href={href}
-                    aria-label={label}
-                    className="flex h-10 w-10 items-center justify-center rounded-full border border-[#E9EEF5] text-[#1a2b4a] transition-all duration-300 hover:-translate-y-0.5 hover:border-engineering hover:text-engineering"
-                  >
-                    <Icon className="h-4 w-4" />
-                  </a>
-                ))}
-              </div>
+              {settings.social.length > 0 ? (
+                <div className="mt-4 flex justify-center gap-3">
+                  {settings.social.map(({ icon, href, label }) => {
+                    const Icon = SOCIAL_ICONS[icon as keyof typeof SOCIAL_ICONS] ?? Link2;
+
+                    return (
+                      <a
+                        key={href}
+                        href={href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={label}
+                        className="flex h-10 w-10 items-center justify-center rounded-full border border-[#E9EEF5] text-[#1a2b4a] transition-all duration-300 hover:-translate-y-0.5 hover:border-engineering hover:text-engineering"
+                      >
+                        <Icon className="h-4 w-4" />
+                      </a>
+                    );
+                  })}
+                </div>
+              ) : null}
             </div>
           </motion.aside>
         </>

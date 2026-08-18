@@ -33,15 +33,17 @@ export default function AboutSection({
 }: AboutSectionProps) {
   const heading = title?.trim() || "";
   const hasCopy = Boolean(heading) || paragraphs.length > 0;
-  const hasStats = stats.length > 0;
+  const hasStats = Array.isArray(stats) && stats.length > 0;
+  const collageImages = Array.isArray(images) ? images.filter((src) => typeof src === "string" && src.trim()) : [];
+  const hasCollage = collageImages.length > 0;
 
-  if (!hasCopy && !hasStats) return null;
+  if (!hasCopy && !hasStats && !hasCollage) return null;
 
   return (
     <section className="relative overflow-hidden bg-[#f0f7fa] py-[88px] sm:py-[100px] lg:py-[112px] dark:bg-surface">
       <div className="container-wide px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 items-center gap-14 lg:grid-cols-2 lg:gap-[72px]">
-          <AboutCollage images={images} />
+        <div className={`grid grid-cols-1 items-center gap-14 ${hasCollage ? "lg:grid-cols-2 lg:gap-[72px]" : ""}`}>
+          {hasCollage ? <AboutCollage images={collageImages} /> : null}
           <motion.div initial={{ opacity: 0, x: 40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: 0.1 }} className="relative">
             <SkylineWatermark />
             <div className="relative z-10 max-w-[540px]">

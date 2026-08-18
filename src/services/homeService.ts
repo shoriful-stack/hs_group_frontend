@@ -135,8 +135,17 @@ function normalizeAboutStats(value: unknown): AboutStats {
       })
     : [];
 
-  const images = Array.isArray(value.images)
-    ? value.images.filter((image): image is string => typeof image === "string" && Boolean(image.trim()))
+  let imageList: unknown = value.images;
+  if (typeof imageList === "string" && imageList.trim()) {
+    try {
+      imageList = JSON.parse(imageList);
+    } catch {
+      imageList = [];
+    }
+  }
+
+  const images = Array.isArray(imageList)
+    ? imageList.filter((image): image is string => typeof image === "string" && Boolean(image.trim()))
     : [];
 
   return {
@@ -298,12 +307,28 @@ export function mapHeroSlides(items: HeroItem[]): HeroSlideView[] {
     });
 }
 
-export function mapAboutCollageImages(about: AboutStats): string[] {
-  const raw = [...about.images];
-  if (about.image && !raw.includes(about.image)) {
-    raw.unshift(about.image);
+export function mapAboutCollageImages(about?: AboutStats | null): string[] {
+  try {
+    if (!about) return [];
+
+    const gallery = Array.isArray(about.images) ? about.images : [];
+    const raw = gallery.length > 0 ? gallery : [about.image];
+    const seen = new Set<string>();
+    const urls: string[] = [];
+
+    for (const path of raw) {
+      if (typeof path !== "string") continue;
+      const url = toAbsoluteStorageUrl(path);
+      if (!url || seen.has(url)) continue;
+      seen.add(url);
+      urls.push(url);
+      if (urls.length >= 4) break;
+    }
+
+    return urls;
+  } catch {
+    return [];
   }
-  return raw.map((path) => toAbsoluteStorageUrl(path)).filter(Boolean);
 }
 
 export function mapFeatureCards(items: FeatureItem[]): FeatureCardView[] {

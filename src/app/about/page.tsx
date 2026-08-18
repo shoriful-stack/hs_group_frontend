@@ -15,6 +15,7 @@ import AboutCapabilitiesSection from "@/components/sections/about/AboutCapabilit
 import AboutIndustriesSection from "@/components/sections/about/AboutIndustriesSection";
 import AboutCSRSection from "@/components/sections/about/AboutCSRSection";
 import { siteConfig } from "@/data/site";
+import { getHomeStaticData, mapAboutCollageImages } from "@/services/homeService";
 
 const aboutDescription = `Learn about ${siteConfig.name} — engineering excellence in power, telecom, infrastructure, and smart technology since 2010.`;
 
@@ -36,7 +37,15 @@ export const metadata: Metadata = {
   },
 };
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  let collageImages: string[] = [];
+  try {
+    const data = await getHomeStaticData();
+    collageImages = mapAboutCollageImages(data.about_stats);
+  } catch {
+    collageImages = [];
+  }
+
   return (
     <>
       <AboutPageSchema />
@@ -44,7 +53,7 @@ export default function AboutPage() {
       <Header />
       <main id="main-content" tabIndex={-1} className="about-scroll-padding overflow-x-clip outline-none">
         <AboutHeroSection />
-        <AboutOverviewSection />
+        <AboutOverviewSection images={collageImages} />
         <AboutStatsSection />
         <AboutTimelineSection />
         <AboutChairmanSection />

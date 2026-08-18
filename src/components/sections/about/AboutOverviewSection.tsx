@@ -43,57 +43,72 @@ function OverviewBlueprint() {
   );
 }
 
-export default function AboutOverviewSection() {
+export default function AboutOverviewSection({ images = [] }: { images?: string[] }) {
   const sectionRef = useRef<HTMLElement>(null);
   const collageRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
+  const collageImages = Array.isArray(images)
+    ? images.filter((src): src is string => typeof src === "string" && Boolean(src.trim()))
+    : [];
+  const hasCollage = collageImages.length > 0;
 
   useEffect(() => {
     const section = sectionRef.current;
     const collage = collageRef.current;
     const content = contentRef.current;
-    if (!section || !collage || !content) return;
+    if (!section || !content) return;
 
-    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (prefersReduced) return;
+    try {
+      const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (prefersReduced) return;
 
-    const ctx = gsap.context(() => {
-      gsap.from(collage, {
-        opacity: 0,
-        y: 40,
-        scale: 0.97,
-        duration: 0.8,
-        ease: "power3.out",
-        scrollTrigger: { trigger: section, start: "top 82%", toggleActions: "play none none none" },
-      });
+      const ctx = gsap.context(() => {
+        if (collage) {
+          gsap.from(collage, {
+            opacity: 0,
+            y: 40,
+            scale: 0.97,
+            duration: 0.8,
+            ease: "power3.out",
+            scrollTrigger: { trigger: section, start: "top 82%", toggleActions: "play none none none" },
+          });
 
-      gsap.to(collage.querySelectorAll("[data-floating-badge]"), {
-        y: (i) => (i % 2 === 0 ? -8 : 8),
-        duration: 3.2,
-        ease: "sine.inOut",
-        repeat: -1,
-        yoyo: true,
-        stagger: 0.5,
-      });
+          const badges = collage.querySelectorAll("[data-floating-badge]");
+          if (badges.length > 0) {
+            gsap.to(badges, {
+              y: (i) => (i % 2 === 0 ? -8 : 8),
+              duration: 3.2,
+              ease: "sine.inOut",
+              repeat: -1,
+              yoyo: true,
+              stagger: 0.5,
+            });
+          }
+        }
 
-      const lines = content.querySelectorAll("[data-overview-line]");
-      gsap.fromTo(
-        lines,
-        { opacity: 0, y: 28 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.7,
-          ease: "power3.out",
-          stagger: 0.12,
-          immediateRender: false,
-          scrollTrigger: { trigger: content, start: "top 85%", toggleActions: "play none none none" },
-        },
-      );
-    }, section);
+        const lines = content.querySelectorAll("[data-overview-line]");
+        if (lines.length === 0) return;
 
-    return () => ctx.revert();
-  }, []);
+        gsap.fromTo(
+          lines,
+          { opacity: 0, y: 28 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.7,
+            ease: "power3.out",
+            stagger: 0.12,
+            immediateRender: false,
+            scrollTrigger: { trigger: content, start: "top 85%", toggleActions: "play none none none" },
+          },
+        );
+      }, section);
+
+      return () => ctx.revert();
+    } catch {
+      return;
+    }
+  }, [hasCollage]);
 
   return (
     <section
@@ -102,10 +117,10 @@ export default function AboutOverviewSection() {
     >
       <OverviewBlueprint />
       <div className={ABOUT_INNER}>
-        <div className={`grid grid-cols-1 items-start lg:grid-cols-[minmax(0,0.45fr)_minmax(0,0.55fr)] ${ABOUT_GRID_GAP}`}>
-          {/* Image collage + floating badges */}
+        <div className={`grid grid-cols-1 items-start ${hasCollage ? "lg:grid-cols-[minmax(0,0.45fr)_minmax(0,0.55fr)]" : ""} ${ABOUT_GRID_GAP}`}>
+          {hasCollage ? (
           <div ref={collageRef} className="relative mx-auto w-full max-w-[610px] lg:mx-0">
-            <AboutCollage />
+            <AboutCollage images={collageImages} />
             {aboutOverview.floatingBadges.map((badge, i) => (
               <div
                 key={badge.label}
@@ -126,6 +141,7 @@ export default function AboutOverviewSection() {
               ))}
             </div>
           </div>
+          ) : null}
 
           {/* Editorial content */}
           <div ref={contentRef} className="relative">

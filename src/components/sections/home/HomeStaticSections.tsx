@@ -114,17 +114,21 @@ export async function HomeStaticHero() {
 }
 
 export async function HomeStaticAbout() {
-  const data = await getHomeStaticData();
-  const about = data.about_stats;
+  try {
+    const data = await getHomeStaticData();
+    const about = data?.about_stats;
 
-  return (
-    <AboutSection
-      title={about.title}
-      paragraphs={toParagraphs(about.content)}
-      images={mapAboutCollageImages(about)}
-      stats={about.stats}
-    />
-  );
+    return (
+      <AboutSection
+        title={about?.title}
+        paragraphs={toParagraphs(about?.content)}
+        images={mapAboutCollageImages(about)}
+        stats={Array.isArray(about?.stats) ? about.stats : []}
+      />
+    );
+  } catch {
+    return null;
+  }
 }
 
 export async function HomeStaticFeatures() {

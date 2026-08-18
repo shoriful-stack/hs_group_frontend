@@ -1,7 +1,13 @@
 import { siteConfig } from "@/data/site";
-import { portfolioServices } from "@/data/services-page";
+import type { ServiceCardView } from "@/types/home";
 
-export default function ServicesPageSchema() {
+export default function ServicesPageSchema({
+  services = [],
+}: {
+  services?: ServiceCardView[];
+}) {
+  const items = Array.isArray(services) ? services : [];
+
   const schema = {
     "@context": "https://schema.org",
     "@graph": [
@@ -20,7 +26,7 @@ export default function ServicesPageSchema() {
       },
       {
         "@type": "ItemList",
-        itemListElement: portfolioServices.map((service, i) => ({
+        itemListElement: items.map((service, i) => ({
           "@type": "ListItem",
           position: i + 1,
           item: {
@@ -28,7 +34,7 @@ export default function ServicesPageSchema() {
             name: service.title,
             description: service.description,
             provider: { "@type": "Organization", name: siteConfig.name },
-            url: `/services#service-${service.slug}`,
+            url: `/services/${service.slug}`,
           },
         })),
       },

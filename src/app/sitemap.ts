@@ -3,12 +3,12 @@ import { careerJobs } from "@/data/careers-page";
 import { newsArticles } from "@/data/news";
 import { getAllProductSlugs } from "@/data/product-detail";
 import { getAllCaseStudySlugs } from "@/data/project-case-study";
-import { getAllServiceSlugs } from "@/data/service-detail";
+import { getServiceSlugs } from "@/services/serviceService";
 import { siteConfig } from "@/data/site";
 
 const base = siteConfig.url.replace(/\/$/, "");
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticRoutes = [
     "",
     "/about",
@@ -35,7 +35,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.7,
   }));
 
-  const services = getAllServiceSlugs().map((slug) => ({
+  let serviceSlugs: string[] = [];
+  try {
+    serviceSlugs = await getServiceSlugs();
+  } catch {
+    serviceSlugs = [];
+  }
+
+  const services = (Array.isArray(serviceSlugs) ? serviceSlugs : []).map((slug) => ({
     url: `${base}/services/${slug}`,
     lastModified: new Date(),
     changeFrequency: "monthly" as const,

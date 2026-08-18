@@ -6,8 +6,8 @@ import ServicesPageSchema from "@/components/sections/services/ServicesPageSchem
 import ServicesHeroSection from "@/components/sections/services/ServicesHeroSection";
 import ServicesCategoriesSection from "@/components/sections/services/ServicesCategoriesSection";
 import ServicesFilterGridSection from "@/components/sections/services/ServicesFilterGridSection";
-import { ServicesRelatedProjectsSection } from "@/components/sections/services/ServicesProjectsSuccessCta";
 import CTASection from "@/components/sections/CTASection";
+import { getServicesPageData } from "@/services/serviceService";
 import { siteConfig } from "@/data/site";
 
 const description = `Delivering reliable engineering, power, telecom, renewable energy, industrial automation and smart infrastructure solutions from ${siteConfig.name}.`;
@@ -28,10 +28,22 @@ export const metadata: Metadata = {
   },
 };
 
-export default function ServicesPage() {
+export default async function ServicesPage() {
+  let services: Awaited<ReturnType<typeof getServicesPageData>>["services"] = [];
+  let categories: Awaited<ReturnType<typeof getServicesPageData>>["categories"] = [];
+
+  try {
+    const data = await getServicesPageData();
+    services = Array.isArray(data?.services) ? data.services : [];
+    categories = Array.isArray(data?.categories) ? data.categories : [];
+  } catch {
+    services = [];
+    categories = [];
+  }
+
   return (
     <>
-      <ServicesPageSchema />
+      <ServicesPageSchema services={services} />
       <AboutSkipLink />
       <Header />
       <main
@@ -40,9 +52,8 @@ export default function ServicesPage() {
         className="about-scroll-padding overflow-x-clip outline-none"
       >
         <ServicesHeroSection />
-        <ServicesCategoriesSection />
-        <ServicesFilterGridSection />
-        <ServicesRelatedProjectsSection />
+        <ServicesCategoriesSection categories={categories} />
+        <ServicesFilterGridSection services={services} categories={categories} />
         <CTASection />
       </main>
       <Footer />

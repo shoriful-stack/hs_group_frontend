@@ -26,8 +26,6 @@ import {
   SERVICES_INNER,
 } from "./constants";
 
-const trustChips = ["Power", "Telecom", "Solar", "Civil", "Automation", "IoT"];
-
 const floatingIcons = [
   { Icon: Wrench, left: "62%", top: "28%", delay: 0 },
   { Icon: Zap, left: "78%", top: "42%", delay: 0.4 },
@@ -242,7 +240,7 @@ export default function ServicesHeroSection() {
             {servicesHero.subtitle}
           </p>
 
-          <div
+          {/* <div
             data-hero-reveal
             className="mt-8 flex w-full flex-col items-stretch gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-4"
           >
@@ -259,9 +257,9 @@ export default function ServicesHeroSection() {
             >
               {servicesHero.secondaryCta.label}
             </Link>
-          </div>
+          </div> */}
 
-          <div data-hero-reveal className="mt-6 flex flex-wrap gap-2">
+          {/* <div data-hero-reveal className="mt-6 flex flex-wrap gap-2">
             {trustChips.map((chip) => (
               <span
                 key={chip}
@@ -270,7 +268,7 @@ export default function ServicesHeroSection() {
                 {chip}
               </span>
             ))}
-          </div>
+          </div> */}
         </div>
       </div>
 

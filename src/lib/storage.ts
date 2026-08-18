@@ -14,25 +14,29 @@ export function toAbsoluteStorageUrl(
   path: string | null | undefined,
   fallback = ""
 ): string {
-  if (!path) return fallback;
+  try {
+    if (!path) return fallback;
 
-  const trimmed = path.trim();
-  if (!trimmed) return fallback;
-  if (isAbsoluteUrl(trimmed)) return trimmed;
+    const trimmed = path.trim();
+    if (!trimmed) return fallback;
+    if (isAbsoluteUrl(trimmed)) return trimmed;
 
-  const origin = getApiOrigin();
-  const storageBase = getStorageUrl();
-  const withoutLeadingSlashes = trimmed.replace(/^\/+/, "");
+    const origin = getApiOrigin();
+    const storageBase = getStorageUrl();
+    const withoutLeadingSlashes = trimmed.replace(/^\/+/, "");
 
-  if (withoutLeadingSlashes.startsWith("storage/")) {
-    return `${origin}/${withoutLeadingSlashes}`;
+    if (withoutLeadingSlashes.startsWith("storage/")) {
+      return `${origin}/${withoutLeadingSlashes}`;
+    }
+
+    if (trimmed.startsWith("/storage/")) {
+      return `${origin}${trimmed}`;
+    }
+
+    return `${storageBase}/${withoutLeadingSlashes}`;
+  } catch {
+    return fallback;
   }
-
-  if (trimmed.startsWith("/storage/")) {
-    return `${origin}${trimmed}`;
-  }
-
-  return `${storageBase}/${withoutLeadingSlashes}`;
 }
 
 /** Map a list of Laravel paths to absolute URLs, dropping empty values. */

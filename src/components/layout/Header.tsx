@@ -43,16 +43,8 @@ export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
-  const [hash, setHash] = useState("");
   const dropdownRef = useRef<HTMLDivElement>(null);
   const mobileTriggerRef = useRef<HTMLButtonElement>(null);
-
-  useEffect(() => {
-    const updateHash = () => setHash(window.location.hash);
-    updateHash();
-    window.addEventListener("hashchange", updateHash);
-    return () => window.removeEventListener("hashchange", updateHash);
-  }, [pathname]);
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
@@ -70,14 +62,12 @@ export default function Header() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const isChildNavActive = (childHref: string) => {
-    const [path, childHash] = childHref.split("#");
-    if (pathname !== path) return false;
-    return childHash ? hash === `#${childHash}` : true;
-  };
-
   const renderNavItem = (link: NavItem) => {
-    const hasChildren = "children" in link && link.children;
+    const productItems =
+      link.href === "/products" && Array.isArray(settings?.latestProducts)
+        ? settings.latestProducts
+        : [];
+    const hasChildren = productItems.length > 0;
     const isActive = isNavActive(link.href, pathname);
     const itemClass = `group relative flex items-center gap-1 px-2.5 py-2 text-[14px] font-medium transition-colors duration-300 xl:px-3.5 xl:text-[15px] ${navItemColorClass(isScrolled, isActive)} ${isActive ? "font-semibold" : ""}`;
 
@@ -108,12 +98,12 @@ export default function Header() {
                 transition={{ duration: 0.2 }}
                 className="absolute top-full left-0 z-50 mt-2 w-72 overflow-hidden rounded-2xl border border-border/80 bg-white/95 py-2 shadow-[0_20px_50px_rgba(15,23,42,0.14)] backdrop-blur-xl dark:bg-card/95"
               >
-                {link.children!.map((child) => {
-                  const isChildLinkActive = isChildNavActive(child.href);
+                {productItems.map((child) => {
+                  const isChildLinkActive = isNavActive(child.href, pathname);
 
                   return (
                     <Link
-                      key={child.href}
+                      key={child.id}
                       href={child.href}
                       className={`block px-5 py-2.5 text-sm transition-all duration-200 ${
                         isChildLinkActive
@@ -121,7 +111,7 @@ export default function Header() {
                           : "text-brand-dark/80 hover:translate-x-1 hover:bg-engineering/5 hover:text-engineering dark:text-foreground/80 dark:hover:text-engineering"
                       }`}
                     >
-                      {child.label}
+                      {child.name}
                     </Link>
                   );
                 })}
@@ -158,7 +148,7 @@ export default function Header() {
       }`}
     >
       <div className="container-wide flex items-center justify-between px-4 sm:px-6 lg:px-8">
-        <Logo size="md" inverted={!isScrolled} src={settings.logoFooter} alt={settings.title} />
+        <Logo size="md" inverted={!isScrolled} src={settings?.logoFooter} alt={settings?.title || ""} />
 
         <nav ref={dropdownRef} className="hidden items-center lg:flex">
           {navLinks.map((link) => renderNavItem(link))}

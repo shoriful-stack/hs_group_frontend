@@ -38,7 +38,7 @@ export async function generateMetadata(): Promise<Metadata> {
         template: `%s | ${name}`,
       },
       description,
-      keywords: settings.keywords.length ? settings.keywords : undefined,
+      keywords: settings.keywords?.length ? settings.keywords : undefined,
       authors: settings.title ? [{ name: settings.title }] : undefined,
       creator: settings.title || undefined,
       publisher: settings.title || undefined,
@@ -91,7 +91,7 @@ export default async function RootLayout({
 }>) {
   let settings = EMPTY_SITE_SETTINGS;
   try {
-    settings = await getSiteSettings();
+    settings = { ...EMPTY_SITE_SETTINGS, ...(await getSiteSettings()) };
   } catch {
     settings = EMPTY_SITE_SETTINGS;
   }
@@ -105,7 +105,7 @@ export default async function RootLayout({
     ...(settings.description ? { description: settings.description } : {}),
     ...(settings.email ? { email: settings.email } : {}),
     ...(settings.phone ? { telephone: settings.phone } : {}),
-    ...(settings.social.length ? { sameAs: settings.social.map((item) => item.href) } : {}),
+    ...(settings.social?.length ? { sameAs: settings.social.map((item) => item.href) } : {}),
   };
 
   return (

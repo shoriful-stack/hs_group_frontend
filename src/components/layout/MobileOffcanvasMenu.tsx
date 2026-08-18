@@ -21,7 +21,7 @@ import {
   Link2,
 } from "lucide-react";
 import Logo from "@/components/ui/Logo";
-import { navLinks, products, services } from "@/data/site";
+import { navLinks } from "@/data/site";
 import { useSiteSettings } from "@/providers/SiteSettingsProvider";
 
 const EASE = [0.22, 0.61, 0.36, 1] as const;
@@ -37,9 +37,7 @@ const SOCIAL_ICONS = {
 
 /** Simple links shown after Products/Services accordions (excludes Home/About/Products/Services) */
 const mobileAfterAccordions = navLinks.filter(
-  (link) =>
-    !["/", "/about", "/products", "/services"].includes(link.href) &&
-    !("children" in link && link.children),
+  (link) => !["/", "/about", "/products", "/services"].includes(link.href),
 );
 
 function checkActive(href: string, pathname: string) {
@@ -60,6 +58,12 @@ export default function MobileOffcanvasMenu({
 }: MobileOffcanvasMenuProps) {
   const pathname = usePathname();
   const settings = useSiteSettings();
+  const latestProducts = Array.isArray(settings?.latestProducts) ? settings.latestProducts : [];
+  const serviceCategories = Array.isArray(settings?.serviceCategories) ? settings.serviceCategories : [];
+  const social = Array.isArray(settings?.social) ? settings.social : [];
+  const phone = settings?.phone ?? "";
+  const email = settings?.email ?? "";
+  const address = settings?.address ?? "";
   const panelRef = useRef<HTMLDivElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
   const [mounted, setMounted] = useState(false);
@@ -165,8 +169,8 @@ export default function MobileOffcanvasMenu({
               >
                 <X className="h-5 w-5" />
               </button>
-              {settings.logoHeader || settings.title ? (
-                <Logo size="sm" src={settings.logoHeader} alt={settings.title} />
+              {settings?.logoFooter || settings?.title ? (
+                <Logo size="sm" src={settings?.logoFooter} alt={settings?.title || ""} />
               ) : null}
             </div>
 
@@ -199,39 +203,57 @@ export default function MobileOffcanvasMenu({
                   onClose={onClose}
                 />
 
-                <MobileAccordion
-                  label="Products"
-                  href="/products"
-                  isExpanded={expanded === "Products"}
-                  onToggle={() =>
-                    setExpanded(expanded === "Products" ? null : "Products")
-                  }
-                  isActive={checkActive("/products", pathname)}
-                  index={2}
-                  items={products.map((p) => ({
-                    label: p.title,
-                    href: `/products#${p.id}`,
-                  }))}
-                  pathname={pathname}
-                  onClose={onClose}
-                />
+                {latestProducts.length > 0 ? (
+                  <MobileAccordion
+                    label="Products"
+                    href="/products"
+                    isExpanded={expanded === "Products"}
+                    onToggle={() =>
+                      setExpanded(expanded === "Products" ? null : "Products")
+                    }
+                    isActive={checkActive("/products", pathname)}
+                    index={2}
+                    items={latestProducts.map((p) => ({
+                      label: p.name,
+                      href: p.href,
+                    }))}
+                    pathname={pathname}
+                    onClose={onClose}
+                  />
+                ) : (
+                  <MobileNavLink
+                    link={{ label: "Products", href: "/products" }}
+                    index={2}
+                    pathname={pathname}
+                    onClose={onClose}
+                  />
+                )}
 
-                <MobileAccordion
-                  label="Services"
-                  href="/services"
-                  isExpanded={expanded === "Services"}
-                  onToggle={() =>
-                    setExpanded(expanded === "Services" ? null : "Services")
-                  }
-                  isActive={checkActive("/services", pathname)}
-                  index={3}
-                  items={services.map((s) => ({
-                    label: s.title,
-                    href: `/services#${s.id}`,
-                  }))}
-                  pathname={pathname}
-                  onClose={onClose}
-                />
+                {serviceCategories.length > 0 ? (
+                  <MobileAccordion
+                    label="Services"
+                    href="/services"
+                    isExpanded={expanded === "Services"}
+                    onToggle={() =>
+                      setExpanded(expanded === "Services" ? null : "Services")
+                    }
+                    isActive={checkActive("/services", pathname)}
+                    index={3}
+                    items={serviceCategories.map((s) => ({
+                      label: s.name,
+                      href: s.href,
+                    }))}
+                    pathname={pathname}
+                    onClose={onClose}
+                  />
+                ) : (
+                  <MobileNavLink
+                    link={{ label: "Services", href: "/services" }}
+                    index={3}
+                    pathname={pathname}
+                    onClose={onClose}
+                  />
+                )}
 
                 {mobileAfterAccordions.map((link, i) => (
                   <MobileNavLink
@@ -247,30 +269,30 @@ export default function MobileOffcanvasMenu({
 
             {/* Footer CTA */}
             <div className="mt-4 shrink-0 border-t border-[#E9EEF5] pt-5">
-              {(settings.phone || settings.email || settings.address) ? (
+              {(phone || email || address) ? (
                 <div className="mb-4 space-y-2.5 text-sm text-[#5a6478]">
-                  {settings.phone ? (
+                  {phone ? (
                     <a
-                      href={`tel:${settings.phone.replace(/\s/g, "")}`}
+                      href={`tel:${phone.replace(/\s/g, "")}`}
                       className="flex items-center gap-2.5 transition-colors hover:text-engineering"
                     >
                       <Phone className="h-4 w-4 shrink-0 text-engineering" />
-                      {settings.phone}
+                      {phone}
                     </a>
                   ) : null}
-                  {settings.email ? (
+                  {email ? (
                     <a
-                      href={`mailto:${settings.email}`}
+                      href={`mailto:${email}`}
                       className="flex items-center gap-2.5 transition-colors hover:text-engineering"
                     >
                       <Mail className="h-4 w-4 shrink-0 text-engineering" />
-                      {settings.email}
+                      {email}
                     </a>
                   ) : null}
-                  {settings.address ? (
+                  {address ? (
                     <p className="flex items-center gap-2.5">
                       <MapPin className="h-4 w-4 shrink-0 text-engineering" />
-                      {settings.address}
+                      {address}
                     </p>
                   ) : null}
                 </div>
@@ -293,9 +315,9 @@ export default function MobileOffcanvasMenu({
                 </Link>
               </div>
 
-              {settings.social.length > 0 ? (
+              {social.length > 0 ? (
                 <div className="mt-4 flex justify-center gap-3">
-                  {settings.social.map(({ icon, href, label }) => {
+                  {social.map(({ icon, href, label }) => {
                     const Icon = SOCIAL_ICONS[icon as keyof typeof SOCIAL_ICONS] ?? Link2;
 
                     return (

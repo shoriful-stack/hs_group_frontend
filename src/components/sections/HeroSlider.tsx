@@ -100,7 +100,7 @@ function HeroSlideContent({ slide }: { slide: HeroSlideView }) {
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.18, ease: [0.22, 1, 0.36, 1] }}
-            className="mt-4 text-lg font-medium leading-snug tracking-tight text-white/85 sm:text-xl lg:text-[22px]"
+            className="text-[34px] font-bold leading-[1.1] tracking-tight text-white sm:text-[40px] md:text-[44px] lg:text-[56px]"
           >
             {slide.subtitle}
           </motion.p>

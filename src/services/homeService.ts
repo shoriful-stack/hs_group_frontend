@@ -403,32 +403,39 @@ function normalizeNavigation(value: unknown): Pick<
 export function mapSiteSettings(
   data: HomeStaticData | LayoutDataResponse | null | undefined
 ): SiteSettingsView {
-  if (!data) return EMPTY_SITE_SETTINGS;
+  try {
+    if (!data) return EMPTY_SITE_SETTINGS;
 
-  const settings = data.general_settings ?? EMPTY_GENERAL_SETTINGS;
-  const contact = data.contact_us ?? EMPTY_CONTACT_INFO;
-  const logoHeader = safeMediaUrl(settings.logo_header);
-  const logoFooter = safeMediaUrl(settings.logo_footer) || logoHeader;
-  const navigation = normalizeNavigation("navigation" in data ? data.navigation : null);
+    const settings = data.general_settings ?? EMPTY_GENERAL_SETTINGS;
+    const contact = data.contact_us ?? EMPTY_CONTACT_INFO;
+    const logoHeader = safeMediaUrl(settings.logo_header);
+    const logoFooter = safeMediaUrl(settings.logo_footer) || logoHeader;
+    const navigation = normalizeNavigation("navigation" in data ? data.navigation : null);
 
-  return {
-    title: stripHtml(settings.title),
-    description: stripHtml(settings.description),
-    keywords: parseKeywords(settings.keywords),
-    favicon: safeMediaUrl(settings.favicon),
-    logoHeader,
-    logoFooter,
-    phone: contact.primary_phone || contact.secondary_phone || "",
-    email: contact.primary_email || contact.secondary_email || "",
-    address: stripHtml(contact.address),
-    social: (data.social_links ?? []).flatMap((item) => {
-      const href = item.link?.trim();
-      if (!href) return [];
-      const meta = socialMeta(item.icon, href);
-      return [{ label: meta.label, href, icon: meta.icon }];
-    }),
-    ...navigation,
-  };
+    return {
+      title: stripHtml(settings.title),
+      description: stripHtml(settings.description),
+      keywords: parseKeywords(settings.keywords),
+      favicon: safeMediaUrl(settings.favicon),
+      logoHeader,
+      logoFooter,
+      phone: contact.primary_phone || contact.secondary_phone || "",
+      email: contact.primary_email || contact.secondary_email || "",
+      address: stripHtml(contact.address),
+      social: Array.isArray(data.social_links)
+        ? data.social_links.flatMap((item) => {
+            if (!isRecord(item)) return [];
+            const href = asString(item.link);
+            if (!href) return [];
+            const meta = socialMeta(asString(item.icon), href);
+            return [{ label: meta.label, href, icon: meta.icon }];
+          })
+        : [],
+      ...navigation,
+    };
+  } catch {
+    return EMPTY_SITE_SETTINGS;
+  }
 }
 
 export const getHomeStaticData = cache(async (): Promise<HomeStaticData> => {

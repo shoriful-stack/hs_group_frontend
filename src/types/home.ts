@@ -113,7 +113,7 @@ export type FeatureCardView =
 
 export interface PartnerLogoView {
   name: string;
-  category: string;
+  category?: string;
   logo?: string;
   brandColor?: string;
 }

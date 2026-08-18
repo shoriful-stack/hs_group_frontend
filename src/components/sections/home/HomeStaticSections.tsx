@@ -137,6 +137,10 @@ export async function HomeStaticFeatures() {
 }
 
 export async function HomeStaticPartners() {
-  const data = await getHomeStaticData();
-  return <TrustNetworkSection logos={mapPartnerLogos(data.partners)} />;
+  try {
+    const data = await getHomeStaticData();
+    return <TrustNetworkSection logos={mapPartnerLogos(data?.partners)} />;
+  } catch {
+    return null;
+  }
 }

@@ -962,36 +962,3 @@ export const aboutCta = {
   trustMessage:
     "Trusted by industries, government organizations, enterprise clients, and strategic partners across multiple engineering sectors.",
 };
-
-export const aboutTrustNetwork = {
-  label: "OUR NETWORK",
-  title: "Trusted Clients & Strategic Partners",
-  subtitle:
-    "HS Group proudly collaborates with government organizations, multinational corporations, industrial enterprises, telecom operators, utility providers, and technology partners to deliver engineering excellence across multiple industries.",
-  stats: [
-    { value: 500, suffix: "+", label: "Projects Delivered", icon: "Briefcase" },
-    { value: 120, suffix: "+", label: "Enterprise Clients", icon: "Building2" },
-    { value: 35, suffix: "+", label: "Strategic Partners", icon: "Users" },
-    { value: 14, suffix: "+", label: "Years of Excellence", icon: "Calendar" },
-    { value: 3, suffix: "", label: "Countries", icon: "Globe" },
-  ],
-  featured: {
-    headline: "Building Long-Term Partnerships Through Engineering Excellence",
-    description:
-      "HS Group partners with industry leaders, government organizations, and multinational companies to deliver reliable engineering, infrastructure, telecom, power, renewable energy, and digital transformation projects.",
-    primaryCta: { label: "Become Our Partner", href: "/contact" },
-    secondaryCta: { label: "Explore Projects", href: "/projects" },
-  },
-  categories: [
-    "Government Organizations",
-    "Enterprise Clients",
-    "Technology Partners",
-    "Power Utilities",
-    "Telecom Operators",
-  ],
-  trustStatement: {
-    headline: "Building Partnerships That Drive Sustainable Growth",
-    description:
-      "Every partnership reflects our commitment to engineering excellence, operational integrity, innovation, and long-term value creation.",
-  },
-};

@@ -11,6 +11,7 @@ import ProjectsIndustriesSection, {
 import ProjectsClientSuccessSection from "@/components/sections/projects/ProjectsClientSuccessSection";
 import ProjectsCTASection from "@/components/sections/projects/ProjectsCTASection";
 import { siteConfig } from "@/data/site";
+import { getPartnerLogos } from "@/services/homeService";
 
 const description = `Explore ${siteConfig.name}'s portfolio of engineering, telecom, power, renewable energy, industrial automation and infrastructure projects delivered with excellence.`;
 
@@ -30,7 +31,14 @@ export const metadata: Metadata = {
   },
 };
 
-export default function ProjectsPage() {
+export default async function ProjectsPage() {
+  let partnerLogos: Awaited<ReturnType<typeof getPartnerLogos>> = [];
+  try {
+    partnerLogos = await getPartnerLogos();
+  } catch {
+    partnerLogos = [];
+  }
+
   return (
     <>
       <ProjectsPageSchema />
@@ -44,7 +52,7 @@ export default function ProjectsPage() {
         <ProjectsHeroSection />
         <ProjectsFilterGridSection />
         <ProjectsIndustriesSection />
-        <ProjectsClientSuccessSection />
+        <ProjectsClientSuccessSection logos={partnerLogos} />
         <ProjectsAwardsSection />
         <ProjectsCTASection />
       </main>

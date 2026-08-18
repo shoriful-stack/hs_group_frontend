@@ -4,8 +4,8 @@ import { useRef, useEffect } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import LogoMarquee from "@/components/ui/LogoMarquee";
-import { aboutTrustNetwork } from "@/data/about";
-import { trustNetworkLogos } from "@/data/site";
+import { sanitizePartnerLogos } from "@/components/sections/TrustNetworkSection";
+import type { PartnerLogoView } from "@/types/home";
 import {
   ABOUT_BG_WHITE,
   ABOUT_BLOCK_SPACING,
@@ -46,93 +46,122 @@ function BlueprintBackground() {
   );
 }
 
-export default function AboutTrustNetworkSection() {
+type AboutTrustNetworkSectionProps = {
+  logos?: PartnerLogoView[] | null;
+  label?: string | null;
+  title?: string | null;
+  subtitle?: string | null;
+};
+
+export default function AboutTrustNetworkSection({
+  logos,
+  label,
+  title,
+  subtitle,
+}: AboutTrustNetworkSectionProps) {
   const sectionRef = useRef<HTMLElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
   const marqueeRef = useRef<HTMLDivElement>(null);
 
-  const { label, subtitle } = aboutTrustNetwork;
-  const midpoint = Math.ceil(trustNetworkLogos.length / 2);
-  const topRow = trustNetworkLogos.slice(0, midpoint);
-  const bottomRow = trustNetworkLogos.slice(midpoint);
+  const items = sanitizePartnerLogos(logos);
+  const headingLabel = typeof label === "string" ? label.trim() : "";
+  const headingTitle = typeof title === "string" ? title.trim() : "";
+  const headingSubtitle = typeof subtitle === "string" ? subtitle.trim() : "";
+  const hasHeading = Boolean(headingLabel || headingTitle || headingSubtitle);
+  const midpoint = Math.ceil(items.length / 2);
+  const topRow = items.slice(0, midpoint);
+  const bottomRow = items.slice(midpoint);
 
   useEffect(() => {
     const section = sectionRef.current;
     if (!section) return;
 
-    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    try {
+      const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (prefersReduced) return;
 
-    const ctx = gsap.context(() => {
-      if (!prefersReduced) {
-        gsap.set(headerRef.current, {
-          opacity: 0,
-          y: 32,
-        });
-        gsap.set(marqueeRef.current, { opacity: 0, y: 24 });
+      const ctx = gsap.context(() => {
+        if (headerRef.current) {
+          gsap.set(headerRef.current, { opacity: 0, y: 32 });
+          gsap.to(headerRef.current, {
+            opacity: 1,
+            y: 0,
+            duration: 0.7,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: headerRef.current,
+              start: "top 88%",
+              toggleActions: "play none none none",
+            },
+          });
+        }
 
-        gsap.to(headerRef.current, {
-          opacity: 1,
-          y: 0,
-          duration: 0.7,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: headerRef.current,
-            start: "top 88%",
-            toggleActions: "play none none none",
-          },
-        });
+        if (marqueeRef.current) {
+          gsap.set(marqueeRef.current, { opacity: 0, y: 24 });
+          gsap.to(marqueeRef.current, {
+            opacity: 1,
+            y: 0,
+            duration: 0.7,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: marqueeRef.current,
+              start: "top 90%",
+              toggleActions: "play none none none",
+            },
+          });
+        }
+      }, section);
 
-        gsap.to(marqueeRef.current, {
-          opacity: 1,
-          y: 0,
-          duration: 0.7,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: marqueeRef.current,
-            start: "top 90%",
-            toggleActions: "play none none none",
-          },
-        });
-      }
-    }, section);
+      return () => ctx.revert();
+    } catch {
+      return;
+    }
+  }, [hasHeading, items.length]);
 
-    return () => ctx.revert();
-  }, []);
+  if (items.length === 0) return null;
 
   return (
     <section
       ref={sectionRef}
       id="trust-network"
-      aria-labelledby="about-trust-network-heading"
+      aria-labelledby={headingTitle ? "about-trust-network-heading" : undefined}
       className={`relative w-full overflow-hidden ${ABOUT_BG_WHITE} ${ABOUT_SECTION_PAD}`}
     >
       <BlueprintBackground />
 
       <div className={`relative z-10 ${ABOUT_INNER}`}>
-        <div ref={headerRef} className={`mx-auto ${ABOUT_BLOCK_SPACING} text-center`}>
-          <span className="section-label mb-5 block">{label}</span>
-          <h2 id="about-trust-network-heading" className="section-title mb-6 text-[#1a2b4a] dark:text-foreground">
-            Trusted Clients &<br className="hidden sm:block" /> Strategic Partners
-          </h2>
-          <p className={`${ABOUT_PROSE_CENTER} ${ABOUT_BODY}`}>
-            {subtitle}
-          </p>
-        </div>
+        {hasHeading ? (
+          <div ref={headerRef} className={`mx-auto ${ABOUT_BLOCK_SPACING} text-center`}>
+            {headingLabel ? <span className="section-label mb-5 block">{headingLabel}</span> : null}
+            {headingTitle ? (
+              <h2 id="about-trust-network-heading" className="section-title mb-6 text-[#1a2b4a] dark:text-foreground">
+                {headingTitle}
+              </h2>
+            ) : null}
+            {headingSubtitle ? (
+              <p className={`${ABOUT_PROSE_CENTER} ${ABOUT_BODY}`}>{headingSubtitle}</p>
+            ) : null}
+          </div>
+        ) : null}
 
         <div ref={marqueeRef}>
           <div className="space-y-5 sm:space-y-6">
-            <LogoMarquee
-              items={topRow}
-              direction="ltr"
-              duration={23}
-              ariaLabel="Trusted clients and strategic partners marquee row one"
-            />
-            <LogoMarquee
-              items={bottomRow}
-              direction="rtl"
-              duration={21}
-              ariaLabel="Trusted clients and strategic partners marquee row two"
-            />
+            {topRow.length > 0 ? (
+              <LogoMarquee
+                items={topRow}
+                direction="ltr"
+                duration={23}
+                ariaLabel="Trusted clients and strategic partners marquee row one"
+              />
+            ) : null}
+            {bottomRow.length > 0 ? (
+              <LogoMarquee
+                items={bottomRow}
+                direction="rtl"
+                duration={21}
+                ariaLabel="Trusted clients and strategic partners marquee row two"
+              />
+            ) : null}
           </div>
         </div>
       </div>

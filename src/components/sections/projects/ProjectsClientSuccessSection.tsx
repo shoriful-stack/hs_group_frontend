@@ -9,7 +9,7 @@ import type { Swiper as SwiperType } from "swiper";
 import SectionHeading from "@/components/ui/SectionHeading";
 import LogoMarquee from "@/components/ui/LogoMarquee";
 import { projectTestimonials } from "@/data/projects-page";
-import { trustNetworkLogos } from "@/data/site";
+import type { PartnerLogoView } from "@/types/home";
 import {
   PROJECTS_BG_WHITE,
   PROJECTS_BLOCK_SPACING,
@@ -24,7 +24,11 @@ import {
 import "swiper/css";
 import "swiper/css/pagination";
 
-export default function ProjectsClientSuccessSection() {
+export default function ProjectsClientSuccessSection({
+  logos = [],
+}: {
+  logos?: PartnerLogoView[] | null;
+}) {
   const prevRef = useRef<HTMLButtonElement>(null);
   const nextRef = useRef<HTMLButtonElement>(null);
   const [mounted, setMounted] = useState(false);
@@ -159,19 +163,20 @@ export default function ProjectsClientSuccessSection() {
           </div>
         )}
 
-        {/* Logos */}
+        {Array.isArray(logos) && logos.length > 0 ? (
         <div className="flex flex-col gap-3 sm:gap-4">
           <LogoMarquee
-            items={trustNetworkLogos}
+            items={logos}
             direction="rtl"
             ariaLabel="Client and partner logos marquee row one"
           />
           <LogoMarquee
-            items={trustNetworkLogos}
+            items={logos}
             direction="ltr"
             ariaLabel="Client and partner logos marquee row two"
           />
         </div>
+        ) : null}
       </div>
 
       <style jsx global>{`

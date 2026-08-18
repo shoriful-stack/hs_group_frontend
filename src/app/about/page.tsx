@@ -15,7 +15,7 @@ import AboutCapabilitiesSection from "@/components/sections/about/AboutCapabilit
 import AboutIndustriesSection from "@/components/sections/about/AboutIndustriesSection";
 import AboutCSRSection from "@/components/sections/about/AboutCSRSection";
 import { siteConfig } from "@/data/site";
-import { getHomeStaticData, mapAboutCollageImages } from "@/services/homeService";
+import { getHomeStaticData, mapAboutCollageImages, mapPartnerLogos } from "@/services/homeService";
 
 const aboutDescription = `Learn about ${siteConfig.name} — engineering excellence in power, telecom, infrastructure, and smart technology since 2010.`;
 
@@ -39,11 +39,14 @@ export const metadata: Metadata = {
 
 export default async function AboutPage() {
   let collageImages: string[] = [];
+  let partnerLogos: Awaited<ReturnType<typeof mapPartnerLogos>> = [];
   try {
     const data = await getHomeStaticData();
     collageImages = mapAboutCollageImages(data.about_stats);
+    partnerLogos = mapPartnerLogos(data.partners);
   } catch {
     collageImages = [];
+    partnerLogos = [];
   }
 
   return (
@@ -60,7 +63,7 @@ export default async function AboutPage() {
         <AboutVisionSection />
         <AboutCapabilitiesSection />
         <AboutIndustriesSection />
-        <AboutTrustNetworkSection />
+        <AboutTrustNetworkSection logos={partnerLogos} />
         <AboutCSRSection />
         <AboutCTASection />
       </main>

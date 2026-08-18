@@ -1,16 +1,10 @@
 "use client";
 
 import PartnerLogoCard from "@/components/ui/PartnerLogoCard";
-
-export type TrustLogo = {
-  name: string;
-  category: string;
-  logo?: string;
-  brandColor?: string;
-};
+import type { PartnerLogoView } from "@/types/home";
 
 interface LogoMarqueeProps {
-  items: TrustLogo[];
+  items?: PartnerLogoView[] | null;
   direction?: "ltr" | "rtl";
   duration?: number;
   ariaLabel: string;
@@ -22,7 +16,13 @@ export default function LogoMarquee({
   duration = 22,
   ariaLabel,
 }: LogoMarqueeProps) {
-  const track = [...items, ...items];
+  const safe = Array.isArray(items)
+    ? items.filter((item) => item && typeof item.name === "string" && item.name.trim())
+    : [];
+
+  if (safe.length === 0) return null;
+
+  const track = [...safe, ...safe];
 
   return (
     <div

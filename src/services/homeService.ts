@@ -178,14 +178,13 @@ function normalizeFeatures(items: unknown): FeatureItem[] {
 function normalizePartners(items: unknown): PartnerLogo[] {
   if (!Array.isArray(items)) return [];
 
-  return items.flatMap((item) => {
+  return items.flatMap((item, index) => {
     if (!isRecord(item)) return [];
-    const id = asNumber(item.id);
     const name = asString(item.name) ?? asString(item.title);
-    if (!id || !name) return [];
+    if (!name) return [];
     return [
       {
-        id,
+        id: asNumber(item.id) || index + 1,
         name,
         logo: asString(item.logo) ?? asString(item.image),
         content: asString(item.content),
@@ -352,12 +351,32 @@ export function mapFeatureCards(items: FeatureItem[]): FeatureCardView[] {
   });
 }
 
-export function mapPartnerLogos(items: PartnerLogo[]): PartnerLogoView[] {
-  return items.map((item) => ({
-    name: item.name,
-    category: stripHtml(item.content) || "Strategic Partner",
-    logo: toAbsoluteStorageUrl(item.logo) || undefined,
-  }));
+export function mapPartnerLogos(items?: PartnerLogo[] | null): PartnerLogoView[] {
+  try {
+    if (!Array.isArray(items)) return [];
+
+    const seen = new Set<string>();
+    const logos: PartnerLogoView[] = [];
+
+    for (const item of items) {
+      const name = item?.name?.trim();
+      if (!name || seen.has(name)) continue;
+      seen.add(name);
+
+      const logo = toAbsoluteStorageUrl(item.logo) || undefined;
+      const category = stripHtml(item.content) || undefined;
+
+      logos.push({
+        name,
+        ...(logo ? { logo } : {}),
+        ...(category ? { category } : {}),
+      });
+    }
+
+    return logos;
+  } catch {
+    return [];
+  }
 }
 
 function parseKeywords(value: string | null): string[] {
@@ -473,6 +492,15 @@ export const getHomeStaticData = cache(async (): Promise<HomeStaticData> => {
     return EMPTY_HOME_STATIC_DATA;
   }
 });
+
+export async function getPartnerLogos(): Promise<PartnerLogoView[]> {
+  try {
+    const data = await getHomeStaticData();
+    return mapPartnerLogos(data?.partners);
+  } catch {
+    return [];
+  }
+}
 
 export const getSiteSettings = cache(async (): Promise<SiteSettingsView> => {
   try {

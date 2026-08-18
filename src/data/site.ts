@@ -237,41 +237,6 @@ export const whyChooseUsSection = {
 /** @deprecated Use whyChooseUsSection */
 export const whyChooseUs = whyChooseUsSection.cards.filter((c) => c.type === "text");
 
-export const partners = [
-  { name: "Siemens", logo: "https://placehold.co/200x80/1e3050/ffffff?text=Siemens" },
-  { name: "Schneider Electric", logo: "https://placehold.co/200x80/1e3050/ffffff?text=Schneider" },
-  { name: "ABB", logo: "https://placehold.co/200x80/1e3050/ffffff?text=ABB" },
-  { name: "Huawei", logo: "https://placehold.co/200x80/1e3050/ffffff?text=Huawei" },
-  { name: "Eaton", logo: "https://placehold.co/200x80/1e3050/ffffff?text=Eaton" },
-  { name: "Legrand", logo: "https://placehold.co/200x80/1e3050/ffffff?text=Legrand" },
-  { name: "Vertiv", logo: "https://placehold.co/200x80/1e3050/ffffff?text=Vertiv" },
-  { name: "Delta", logo: "https://placehold.co/200x80/1e3050/ffffff?text=Delta" },
-];
-
-export const trustNetworkSection = {
-  label: "OUR NETWORK",
-  title: "Trusted Clients & Strategic Partners",
-  subtitle:
-    "HS Group proudly collaborates with government organizations, multinational corporations, telecom operators, utility providers, and technology partners to deliver reliable engineering, infrastructure, power, and digital transformation projects.",
-};
-
-export const trustNetworkLogos = [
-  { name: "BPDB", category: "Government Organizations", brandColor: "#1a5f2a" },
-  { name: "BTRC", category: "Government Organizations", brandColor: "#0d47a1" },
-  { name: "PGCB", category: "Power Utilities", brandColor: "#c62828" },
-  { name: "Grameenphone", category: "Telecom Operators", brandColor: "#00a651" },
-  { name: "Robi", category: "Telecom Operators", brandColor: "#e4002b" },
-  { name: "Banglalink", category: "Telecom Operators", brandColor: "#ff6600" },
-  { name: "Summit Group", category: "Enterprise Clients", brandColor: "#003366" },
-  { name: "Siemens", category: "Technology Partners", logo: "https://placehold.co/200x80/94a3b8/ffffff?text=Siemens", brandColor: "#009999" },
-  { name: "Schneider Electric", category: "Technology Partners", logo: "https://placehold.co/200x80/94a3b8/ffffff?text=Schneider", brandColor: "#3dcd58" },
-  { name: "ABB", category: "Technology Partners", logo: "https://placehold.co/200x80/94a3b8/ffffff?text=ABB", brandColor: "#ff000f" },
-  { name: "Huawei", category: "Technology Partners", logo: "https://placehold.co/200x80/94a3b8/ffffff?text=Huawei", brandColor: "#cf0a2c" },
-  { name: "Eaton", category: "Technology Partners", logo: "https://placehold.co/200x80/94a3b8/ffffff?text=Eaton", brandColor: "#005eb8" },
-  { name: "DESCO", category: "Power Utilities", brandColor: "#1565c0" },
-  { name: "Vertiv", category: "Technology Partners", logo: "https://placehold.co/200x80/94a3b8/ffffff?text=Vertiv", brandColor: "#f36d21" },
-];
-
 export const projects = [
   {
     id: 1,

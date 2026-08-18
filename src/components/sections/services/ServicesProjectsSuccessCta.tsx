@@ -11,7 +11,7 @@ import SectionHeading from "@/components/ui/SectionHeading";
 import LogoMarquee from "@/components/ui/LogoMarquee";
 import { portfolioProjects } from "@/data/projects-page";
 import { serviceDownloads, serviceTestimonials, servicesCta } from "@/data/services-page";
-import { trustNetworkLogos } from "@/data/site";
+import type { PartnerLogoView } from "@/types/home";
 import { useAboutReducedMotion } from "@/components/sections/about/useAboutReducedMotion";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -104,7 +104,11 @@ export function ServicesRelatedProjectsSection() {
   );
 }
 
-export function ServicesClientSuccessSection() {
+export function ServicesClientSuccessSection({
+  logos = [],
+}: {
+  logos?: PartnerLogoView[] | null;
+}) {
   const { prevRef, nextRef, mounted, init } = useNav();
 
   return (
@@ -149,10 +153,12 @@ export function ServicesClientSuccessSection() {
           </Swiper>
         )}
 
+        {Array.isArray(logos) && logos.length > 0 ? (
         <div className="space-y-4">
-          <LogoMarquee items={trustNetworkLogos} direction="rtl" ariaLabel="Client logos row one" />
-          <LogoMarquee items={trustNetworkLogos} direction="ltr" ariaLabel="Client logos row two" />
+          <LogoMarquee items={logos} direction="rtl" ariaLabel="Client logos row one" />
+          <LogoMarquee items={logos} direction="ltr" ariaLabel="Client logos row two" />
         </div>
+        ) : null}
       </div>
     </section>
   );

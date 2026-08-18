@@ -8,7 +8,8 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, A11y } from "swiper/modules";
 import type { Swiper as SwiperType } from "swiper";
 import ServiceCard from "@/components/ui/ServiceCard";
-import { services, servicesSection } from "@/data/site";
+import { servicesSection } from "@/data/site";
+import type { ServiceCardView } from "@/types/home";
 
 import "swiper/css";
 import "swiper/css/navigation";
@@ -60,7 +61,11 @@ function BlueprintBackground() {
   );
 }
 
-export default function ServicesSection() {
+export default function ServicesSection({
+  items = [],
+}: {
+  items?: ServiceCardView[];
+}) {
   const sectionRef = useRef<HTMLElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
   const carouselRef = useRef<HTMLDivElement>(null);
@@ -139,6 +144,8 @@ export default function ServicesSection() {
     return () => ctx.revert();
   }, [mounted]);
 
+  if (items.length === 0) return null;
+
   return (
     <section
       ref={sectionRef}
@@ -206,15 +213,15 @@ export default function ServicesSection() {
               onSwiper={initSwiper}
               className="service-swiper !overflow-visible"
             >
-              {services.map((service, i) => (
-                <SwiperSlide key={service.id} className="!h-auto">
+              {items.map((service, i) => (
+                <SwiperSlide key={service.slug} className="!h-auto">
                   <ServiceCard
                     number={String(i + 1).padStart(2, "0")}
-                    id={service.id}
+                    slug={service.slug}
                     title={service.title}
                     description={service.description}
                     image={service.image}
-                    featured={i === 0}
+                    category={service.category}
                   />
                 </SwiperSlide>
               ))}

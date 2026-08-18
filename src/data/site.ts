@@ -132,65 +132,14 @@ export const servicesSection = {
     "Delivering world-class engineering, telecom, power, renewable energy, infrastructure and digital technology services for governments, enterprises and industrial clients.",
 };
 
-export const services = [
-  {
-    id: "civil-design",
-    title: "Civil Design & Construction",
-    description:
-      "End-to-end civil engineering, structural design, land development, building construction, road works, and infrastructure execution.",
-    icon: "Building2",
-    image: "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=1400&q=85&auto=format&fit=crop",
-    featured: true,
-  },
-  {
-    id: "electrical-mechanical",
-    title: "Electrical & Mechanical Works",
-    description:
-      "Reliable electrical, mechanical, wiring, grounding, lighting, fire safety, HVAC, and industrial installation solutions.",
-    icon: "Zap",
-    image: "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=1200&q=85&auto=format&fit=crop",
-  },
-  {
-    id: "power-utility",
-    title: "Power & Utility Systems",
-    description:
-      "Substation, transmission, distribution, transformer, switchgear, and utility infrastructure solutions for dependable power delivery.",
-    icon: "Power",
-    image: "https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=1200&q=85&auto=format&fit=crop",
-  },
-  {
-    id: "telecom",
-    title: "Telecom Infrastructure",
-    description:
-      "BTS sites, telecom towers, rooftop structures, camouflage solutions, active/passive equipment installation, and network infrastructure support.",
-    icon: "Radio",
-    image: "https://images.unsplash.com/photo-1565008576549-75ff593a5df6?w=1200&q=85&auto=format&fit=crop",
-  },
-  {
-    id: "solar",
-    title: "Solar Energy Solutions",
-    description:
-      "On-grid, off-grid, net metering, solar irrigation, industrial solar, and renewable energy project implementation.",
-    icon: "Sun",
-    image: "https://images.unsplash.com/photo-1509391366360-2e959784a276?w=1200&q=85&auto=format&fit=crop",
-  },
-  {
-    id: "operations",
-    title: "Operations & Maintenance",
-    description:
-      "Nationwide O&M support for civil, power, telecom, AC, generator, fire safety, and technical infrastructure assets.",
-    icon: "Wrench",
-    image: "https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=1200&q=85&auto=format&fit=crop",
-  },
-  {
-    id: "smart-city",
-    title: "Smart City & IoT Solutions",
-    description:
-      "Digital monitoring, access control, energy monitoring, security systems, asset monitoring, and smart infrastructure solutions through TOI Connect.",
-    icon: "Cpu",
-    image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1200&q=85&auto=format&fit=crop",
-  },
-];
+export const services: Array<{
+  id: string;
+  title: string;
+  description: string;
+  icon: string;
+  image: string;
+  featured?: boolean;
+}> = [];
 
 export const whyChooseUsSection = {
   label: "Why Choose HS Group",

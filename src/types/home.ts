@@ -118,6 +118,81 @@ export interface PartnerLogoView {
   brandColor?: string;
 }
 
+export interface ServiceCardView {
+  id: string;
+  slug: string;
+  title: string;
+  description: string;
+  image: string;
+  category: string;
+  categorySlug: string;
+}
+
+export interface ServiceCategoryView {
+  id: string;
+  name: string;
+  slug: string;
+}
+
+export interface ServiceFactView {
+  label: string;
+  value: string;
+}
+
+export interface ServiceTextCardView {
+  title: string;
+  description: string;
+  icon: string;
+}
+
+export interface ServiceProcessStepView {
+  step: string;
+  title: string;
+  description: string;
+}
+
+export interface ServiceSolutionBlockView {
+  title: string;
+  text: string;
+}
+
+export interface ServiceFaqView {
+  question: string;
+  answer: string;
+}
+
+export interface ServiceEquipmentItemView {
+  name: string;
+}
+
+export interface ServiceEquipmentGroupView {
+  category: string;
+  items: ServiceEquipmentItemView[];
+}
+
+export interface ServiceDetailData {
+  id: string;
+  slug: string;
+  title: string;
+  description: string;
+  overview: string;
+  businessValue: string;
+  image: string;
+  category: string;
+  categorySlug: string;
+  seoTitle: string;
+  seoDescription: string;
+  quickFacts: ServiceFactView[];
+  keyBenefits: ServiceTextCardView[];
+  challenges: ServiceTextCardView[];
+  solution: ServiceSolutionBlockView[];
+  process: ServiceProcessStepView[];
+  scope: ServiceTextCardView[];
+  capabilities: ServiceTextCardView[];
+  equipmentGroups: ServiceEquipmentGroupView[];
+  faqs: ServiceFaqView[];
+}
+
 export interface SocialLinkView {
   label: string;
   href: string;

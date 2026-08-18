@@ -2,6 +2,7 @@ import HeroSlider from "@/components/sections/HeroSlider";
 import AboutSection from "@/components/sections/AboutSection";
 import WhyChooseUs from "@/components/sections/WhyChooseUs";
 import TrustNetworkSection from "@/components/sections/TrustNetworkSection";
+import ServicesSection from "@/components/sections/ServicesSection";
 import {
   getHomeStaticData,
   mapAboutCollageImages,
@@ -10,6 +11,7 @@ import {
   mapPartnerLogos,
   toParagraphs,
 } from "@/services/homeService";
+import { getHomeServices } from "@/services/serviceService";
 
 function Pulse({ className }: { className: string }) {
   return <div className={`animate-pulse bg-[#e8edf2] dark:bg-border ${className}`} />;
@@ -108,6 +110,28 @@ export function PartnersSkeleton() {
   );
 }
 
+export function ServicesSkeleton() {
+  return (
+    <section
+      className="relative w-full overflow-hidden bg-[#fafbfd] py-24 sm:py-28 lg:py-32 dark:bg-background"
+      aria-hidden
+    >
+      <div className="relative z-10 mx-auto w-full max-w-[1700px] px-4 sm:px-6 lg:px-10 xl:px-12">
+        <div className="mb-16 max-w-4xl lg:mb-20">
+          <Pulse className="mb-5 h-3 w-32 rounded" />
+          <Pulse className="mb-6 h-12 w-3/4 max-w-xl rounded-lg" />
+          <Pulse className="h-4 w-full max-w-2xl rounded" />
+        </div>
+        <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
+          {Array.from({ length: 3 }, (_, i) => (
+            <Pulse key={i} className="min-h-[480px] rounded-[28px]" />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export async function HomeStaticHero() {
   const data = await getHomeStaticData();
   return <HeroSlider slides={mapHeroSlides(data.hero)} />;
@@ -140,6 +164,16 @@ export async function HomeStaticPartners() {
   try {
     const data = await getHomeStaticData();
     return <TrustNetworkSection logos={mapPartnerLogos(data?.partners)} />;
+  } catch {
+    return null;
+  }
+}
+
+export async function HomeStaticServices() {
+  try {
+    const items = await getHomeServices();
+    if (!Array.isArray(items) || items.length === 0) return null;
+    return <ServicesSection items={items} />;
   } catch {
     return null;
   }

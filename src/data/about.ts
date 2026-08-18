@@ -941,7 +941,7 @@ export const aboutCta = {
   subtitle:
     "Whether you're planning a major infrastructure project, power solution, telecom network, renewable energy initiative, or digital transformation, HS Group is ready to help you turn your vision into reality.",
   description:
-    "Partner with HS Group to deliver reliable engineering, power, telecom, renewable energy, infrastructure, and smart technology solutions built for long-term success.",
+    "Whether you're planning a major infrastructure project, power solution, telecom network, renewable energy initiative, or digital transformation, HS Group is ready to help you turn your vision into reality.",
   backgroundImage:
     "https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=1600&q=85&auto=format&fit=crop",
   primaryCta: { label: "Start Your Project", href: "/contact" },

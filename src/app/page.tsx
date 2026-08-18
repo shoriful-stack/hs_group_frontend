@@ -38,19 +38,19 @@ export default function HomePage() {
         <Suspense fallback={<HeroSkeleton />}>
           <HomeStaticHero />
         </Suspense>
-        <Suspense fallback={<AboutSkeleton />}>
+        {/* <Suspense fallback={<AboutSkeleton />}>
           <HomeStaticAbout />
-        </Suspense>
+        </Suspense> */}
         <Suspense fallback={<FeaturesSkeleton />}>
           <HomeStaticFeatures />
         </Suspense>
-        <ServicesSection />
-        <ProductCarouselSection />
-        <ProjectsSection />
-        <Suspense fallback={<PartnersSkeleton />}>
+        {/* <ServicesSection /> */}
+        {/* <ProductCarouselSection /> */}
+        {/* <ProjectsSection /> */}
+        {/* <Suspense fallback={<PartnersSkeleton />}>
           <HomeStaticPartners />
-        </Suspense>
-        <BlogSection />
+        </Suspense> */}
+        {/* <BlogSection /> */}
         <CTASection />
       </main>
       <Footer />

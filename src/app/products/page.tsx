@@ -6,10 +6,8 @@ import ProductsPageSchema from "@/components/sections/products/ProductsPageSchem
 import ProductsHeroSection from "@/components/sections/products/ProductsHeroSection";
 import ProductsFinderSection from "@/components/sections/products/ProductsFinderSection";
 import ProductsFilterGridSection from "@/components/sections/products/ProductsFilterGridSection";
-import {
-  ProductsCTASection,
-  ProductsRelatedServicesSection,
-} from "@/components/sections/products/ProductsRelatedCta";
+import { ProductsRelatedServicesSection } from "@/components/sections/products/ProductsRelatedCta";
+import CTASection from "@/components/sections/CTASection";
 import { siteConfig } from "@/data/site";
 
 const description = `Discover enterprise-grade engineering products from ${siteConfig.name} for power, telecom, renewable energy, industrial automation, infrastructure, and smart technology applications.`;
@@ -45,7 +43,7 @@ export default function ProductsPage() {
         <ProductsFinderSection />
         <ProductsFilterGridSection />
         <ProductsRelatedServicesSection />
-        <ProductsCTASection />
+        <CTASection />
       </main>
       <Footer />
     </>

@@ -19,6 +19,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import type { ProductDetail } from "@/data/product-detail";
 import type { PortfolioProduct } from "@/data/products-page";
+import CTASection from "@/components/sections/CTASection";
 import { useAboutReducedMotion } from "@/components/sections/about/useAboutReducedMotion";
 import {
   CINEMATIC_IMAGE,
@@ -467,70 +468,8 @@ export function ProductDetailRelated({ products }: { products: PortfolioProduct[
   );
 }
 
-export function ProductDetailCTA({ product }: { product: ProductDetail }) {
-  const sectionRef = useRef<HTMLElement>(null);
-  const contentRef = useRef<HTMLDivElement>(null);
-  const reducedMotion = useAboutReducedMotion();
-
-  useEffect(() => {
-    const section = sectionRef.current;
-    const content = contentRef.current;
-    if (!section || !content || reducedMotion) return;
-    const ctx = gsap.context(() => {
-      gsap.from(content.querySelectorAll("[data-cta-reveal]"), {
-        opacity: 0, y: 28, duration: 0.65, ease: "power2.out", stagger: 0.08,
-        scrollTrigger: { trigger: content, start: "top 88%", toggleActions: "play none none none" },
-      });
-    }, section);
-    return () => ctx.revert();
-  }, [reducedMotion]);
-
-  return (
-    <section ref={sectionRef} id="cta" className={`scroll-mt-28 ${PRODUCTS_BG_SURFACE} ${PRODUCTS_SECTION_PAD}`} aria-label="Product call to action">
-      <div className={PRODUCTS_INNER}>
-        <div className="relative overflow-hidden rounded-[32px] border border-[#e8edf2] shadow-[0_20px_56px_rgba(15,23,42,0.14)] dark:border-border">
-          <div className="absolute inset-0">
-            <Image src={product.cta.backgroundImage} alt="" fill className="object-cover" sizes="100vw" />
-          </div>
-          <div className="absolute inset-0 bg-[#0f1729]/82" />
-          <svg className="pointer-events-none absolute inset-0 h-full w-full text-white/[0.04]" viewBox="0 0 1440 700" fill="none" aria-hidden preserveAspectRatio="xMidYMid slice">
-            <path d="M0 140H1440M0 280H1440M0 420H1440M0 560H1440" stroke="currentColor" strokeWidth="0.75" />
-            <path d="M240 0V700M480 0V700M720 0V700M960 0V700M1200 0V700" stroke="currentColor" strokeWidth="0.75" />
-          </svg>
-          <div ref={contentRef} className="relative z-10 px-6 py-16 text-center sm:px-12 sm:py-20">
-            <span data-cta-reveal className="mb-5 inline-block text-xs font-bold tracking-[0.24em] text-engineering-light">{product.cta.label}</span>
-            <h2 data-cta-reveal className="mx-auto max-w-[800px] text-[32px] font-bold leading-[1.12] text-white sm:text-[40px] lg:text-[48px]">
-              {product.cta.headline}
-            </h2>
-            <p data-cta-reveal className="mx-auto mt-5 max-w-2xl text-base leading-[1.85] text-white/75 sm:text-lg">
-              {product.cta.description}
-            </p>
-            <div data-cta-reveal className="mt-8 flex flex-col flex-wrap items-center justify-center gap-3 sm:flex-row">
-              <Link
-                href={`/contact?intent=rfq&product=${product.slug}`}
-                className={`group inline-flex w-full items-center justify-center gap-2 rounded-full bg-engineering px-8 py-3.5 text-sm font-semibold text-white shadow-[0_10px_28px_rgba(33,140,206,0.28)] transition-all duration-[400ms] ease-out hover:-translate-y-0.5 hover:bg-[#1a7ab8] hover:shadow-[0_14px_36px_rgba(33,140,206,0.38)] sm:w-auto ${PRODUCTS_FOCUS_RING_LIGHT}`}
-              >
-                Request a Quote
-                <ArrowRight className="h-4 w-4 transition-transform duration-[400ms] group-hover:translate-x-1" />
-              </Link>
-              <Link
-                href={`/contact?intent=specialist&product=${product.slug}`}
-                className={`group inline-flex w-full items-center justify-center gap-2 rounded-full border-2 border-white bg-transparent px-8 py-3.5 text-sm font-semibold text-white transition-all duration-[400ms] ease-out hover:-translate-y-0.5 hover:bg-white hover:text-[#1a2b4a] sm:w-auto ${PRODUCTS_FOCUS_RING_LIGHT}`}
-              >
-                Contact Product Specialist
-              </Link>
-              <a
-                href="#downloads"
-                className={`group inline-flex w-full items-center justify-center gap-2 rounded-full border-2 border-white/40 bg-transparent px-8 py-3.5 text-sm font-semibold text-white transition-all duration-[400ms] ease-out hover:-translate-y-0.5 hover:border-white hover:bg-white hover:text-[#1a2b4a] sm:w-auto ${PRODUCTS_FOCUS_RING_LIGHT}`}
-              >
-                Download Catalogue
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
+export function ProductDetailCTA(_props: { product: ProductDetail }) {
+  return <CTASection id="cta" />;
 }
 
 export function ProductDetailSidebar({ product }: { product: ProductDetail }) {

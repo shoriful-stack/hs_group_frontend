@@ -6,7 +6,7 @@ import CareersPageSchema from "@/components/sections/careers/CareersPageSchema";
 import CareersHeroSection from "@/components/sections/careers/CareersHeroSection";
 import CareersWhySection from "@/components/sections/careers/CareersWhySection";
 import CareersJobsSection from "@/components/sections/careers/CareersJobsSection";
-import CareersCTASection from "@/components/sections/careers/CareersCTASection";
+import CTASection from "@/components/sections/CTASection";
 import { siteConfig } from "@/data/site";
 
 const description = `Explore career opportunities at ${siteConfig.name}. Join our engineering teams delivering power, telecom, renewable energy, and smart infrastructure solutions.`;
@@ -41,7 +41,7 @@ export default function CareersPage() {
         <CareersHeroSection />
         <CareersWhySection />
         <CareersJobsSection />
-        <CareersCTASection />
+        <CTASection />
       </main>
       <Footer />
     </>

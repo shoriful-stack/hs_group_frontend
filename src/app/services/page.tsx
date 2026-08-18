@@ -6,10 +6,8 @@ import ServicesPageSchema from "@/components/sections/services/ServicesPageSchem
 import ServicesHeroSection from "@/components/sections/services/ServicesHeroSection";
 import ServicesCategoriesSection from "@/components/sections/services/ServicesCategoriesSection";
 import ServicesFilterGridSection from "@/components/sections/services/ServicesFilterGridSection";
-import {
-  ServicesCTASection,
-  ServicesRelatedProjectsSection,
-} from "@/components/sections/services/ServicesProjectsSuccessCta";
+import { ServicesRelatedProjectsSection } from "@/components/sections/services/ServicesProjectsSuccessCta";
+import CTASection from "@/components/sections/CTASection";
 import { siteConfig } from "@/data/site";
 
 const description = `Delivering reliable engineering, power, telecom, renewable energy, industrial automation and smart infrastructure solutions from ${siteConfig.name}.`;
@@ -45,7 +43,7 @@ export default function ServicesPage() {
         <ServicesCategoriesSection />
         <ServicesFilterGridSection />
         <ServicesRelatedProjectsSection />
-        <ServicesCTASection />
+        <CTASection />
       </main>
       <Footer />
     </>

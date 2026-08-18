@@ -7,7 +7,7 @@ import NewsHeroSection from "@/components/sections/news/NewsHeroSection";
 import NewsLatestSection from "@/components/sections/news/NewsLatestSection";
 import NewsPressSection from "@/components/sections/news/NewsPressSection";
 import NewsEventsSection from "@/components/sections/news/NewsEventsSection";
-import NewsCTASection from "@/components/sections/news/NewsCTASection";
+import CTASection from "@/components/sections/CTASection";
 import { siteConfig } from "@/data/site";
 
 const description = `Stay updated with ${siteConfig.name}'s latest engineering projects, company announcements, innovations, industry insights, and corporate activities.`;
@@ -43,7 +43,7 @@ export default function BlogPage() {
         <NewsLatestSection />
         <NewsPressSection />
         <NewsEventsSection />
-        <NewsCTASection />
+        <CTASection />
       </main>
       <Footer />
     </>

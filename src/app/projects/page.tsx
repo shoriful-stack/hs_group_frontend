@@ -9,7 +9,7 @@ import ProjectsIndustriesSection, {
   ProjectsAwardsSection,
 } from "@/components/sections/projects/ProjectsIndustriesSection";
 import ProjectsClientSuccessSection from "@/components/sections/projects/ProjectsClientSuccessSection";
-import ProjectsCTASection from "@/components/sections/projects/ProjectsCTASection";
+import CTASection from "@/components/sections/CTASection";
 import { siteConfig } from "@/data/site";
 import { getPartnerLogos } from "@/services/homeService";
 
@@ -54,7 +54,7 @@ export default async function ProjectsPage() {
         <ProjectsIndustriesSection />
         <ProjectsClientSuccessSection logos={partnerLogos} />
         <ProjectsAwardsSection />
-        <ProjectsCTASection />
+        <CTASection />
       </main>
       <Footer />
     </>

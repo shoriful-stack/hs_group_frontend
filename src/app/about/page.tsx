@@ -3,7 +3,7 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import AboutSkipLink from "@/components/sections/about/AboutSkipLink";
 import AboutPageSchema from "@/components/sections/about/AboutPageSchema";
-import AboutCTASection from "@/components/sections/about/AboutCTASection";
+import CTASection from "@/components/sections/CTASection";
 import AboutTrustNetworkSection from "@/components/sections/about/AboutTrustNetworkSection";
 import AboutHeroSection from "@/components/sections/about/AboutHeroSection";
 import AboutOverviewSection from "@/components/sections/about/AboutOverviewSection";
@@ -65,7 +65,7 @@ export default async function AboutPage() {
         <AboutIndustriesSection />
         <AboutTrustNetworkSection logos={partnerLogos} />
         <AboutCSRSection />
-        <AboutCTASection />
+        <CTASection />
       </main>
       <Footer />
     </>

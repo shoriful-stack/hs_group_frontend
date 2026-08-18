@@ -1,11 +1,13 @@
 "use client";
 
+import { Component, type ReactNode } from "react";
 import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
 import { ArrowRight, Phone } from "lucide-react";
-import { siteConfig } from "@/data/site";
+import { useSiteSettings } from "@/providers/SiteSettingsProvider";
 
 interface CTASectionProps {
+  id?: string;
   label?: string;
   headline?: string;
   description?: string;
@@ -14,18 +16,60 @@ interface CTASectionProps {
   showPhone?: boolean;
 }
 
-export default function CTASection({
+class CtaBoundary extends Component<{ children: ReactNode }, { failed: boolean }> {
+  state = { failed: false };
+
+  static getDerivedStateFromError() {
+    return { failed: true };
+  }
+
+  render() {
+    if (this.state.failed) return null;
+    return this.props.children;
+  }
+}
+
+function asText(value: unknown, fallback = ""): string {
+  return typeof value === "string" ? value.trim() : fallback;
+}
+
+function asHref(value: unknown, fallback = "/contact"): string {
+  const href = asText(value);
+  if (!href) return fallback;
+  if (/^(https?:\/\/|mailto:|tel:|#|\/)/i.test(href)) return href;
+  return `/${href.replace(/^\/+/, "")}`;
+}
+
+function telHref(phone: string): string {
+  const value = phone.replace(/[^\d+]/g, "");
+  return value ? `tel:${value}` : "";
+}
+
+function CTASectionInner({
+  id,
   label = "Ready to Start?",
   headline = "Let's Build Your Next Infrastructure Project",
-  description = "Partner with HS Group for world-class engineering, telecom, power, and infrastructure solutions delivered with precision.",
-  primaryCta = { label: "Get in Touch", href: "/contact" },
+  description = "Whether you're planning a major infrastructure project, power solution, telecom network, renewable energy initiative, or digital transformation, HS Group is ready to help you turn your vision into reality.",
+  primaryCta,
   secondaryCta,
   showPhone = true,
 }: CTASectionProps) {
   const reduceMotion = useReducedMotion();
+  const settings = useSiteSettings();
+  const phone = asText(settings?.phone);
+  const phoneHref = telHref(phone);
+  const primary = {
+    label: asText(primaryCta?.label, "Get in Touch") || "Get in Touch",
+    href: asHref(primaryCta?.href),
+  };
+  const secondaryLabel = asText(secondaryCta?.label);
+  const secondaryHref = secondaryCta ? asHref(secondaryCta.href) : "";
+  const heading = asText(headline);
+  const body = asText(description);
+  const kicker = asText(label);
 
   return (
-    <section className="section-padding relative overflow-hidden">
+    <section id={asText(id) || undefined} className="section-padding relative overflow-hidden">
       <div className="container-wide relative px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={reduceMotion ? false : { opacity: 0, y: 40 }}
@@ -44,23 +88,31 @@ export default function CTASection({
             <path d="M120 80h220M120 110h160" stroke="currentColor" strokeWidth="1" />
           </svg>
           <div className="relative px-8 py-16 text-center sm:px-12 sm:py-20 lg:px-20 lg:py-24">
-            <span className="section-label mb-4 inline-block">{label}</span>
-            <h2 className="mx-auto max-w-3xl text-3xl font-bold leading-[1.1] tracking-tight text-foreground sm:text-4xl lg:text-5xl">{headline}</h2>
-            <p className="mx-auto mt-6 max-w-xl text-base leading-[1.85] text-foreground-muted sm:text-lg">{description}</p>
+            {kicker ? <span className="section-label mb-4 inline-block">{kicker}</span> : null}
+            {heading ? (
+              <h2 className="mx-auto max-w-3xl text-3xl font-bold leading-[1.1] tracking-tight text-foreground sm:text-4xl lg:text-5xl">
+                {heading}
+              </h2>
+            ) : null}
+            {body ? (
+              <p className="mx-auto mt-6 max-w-3xl text-base leading-[1.85] text-foreground-muted sm:text-lg">
+                {body}
+              </p>
+            ) : null}
             <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
-              <Link href={primaryCta.href} className="btn-primary group transition-transform duration-[400ms] hover:-translate-y-0.5">
-                {primaryCta.label}
+              <Link href={primary.href} className="btn-primary group transition-transform duration-[400ms] hover:-translate-y-0.5">
+                {primary.label}
                 <ArrowRight className="h-4 w-4 transition-transform duration-[400ms] group-hover:translate-x-1" />
               </Link>
-              {secondaryCta ? (
-                <Link href={secondaryCta.href} className="btn-secondary group">
-                  {secondaryCta.label}
+              {secondaryLabel && secondaryHref ? (
+                <Link href={secondaryHref} className="btn-secondary group">
+                  {secondaryLabel}
                   <ArrowRight className="h-4 w-4 transition-transform duration-[400ms] group-hover:translate-x-1" />
                 </Link>
-              ) : showPhone ? (
-                <a href={`tel:${siteConfig.phone}`} className="btn-secondary">
+              ) : showPhone && phone && phoneHref ? (
+                <a href={phoneHref} className="btn-secondary">
                   <Phone className="h-4 w-4 text-accent" />
-                  {siteConfig.phone}
+                  {phone}
                 </a>
               ) : null}
             </div>
@@ -68,5 +120,13 @@ export default function CTASection({
         </motion.div>
       </div>
     </section>
+  );
+}
+
+export default function CTASection(props: CTASectionProps) {
+  return (
+    <CtaBoundary>
+      <CTASectionInner {...props} />
+    </CtaBoundary>
   );
 }

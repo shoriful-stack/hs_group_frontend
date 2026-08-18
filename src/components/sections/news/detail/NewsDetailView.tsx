@@ -17,7 +17,7 @@ import {
 } from "./NewsDetailAuthorNav";
 import NewsDetailSidebar from "./NewsDetailSidebar";
 import { NewsDetailRelatedArticles } from "./NewsDetailRelated";
-import NewsCTASection from "../NewsCTASection";
+import CTASection from "@/components/sections/CTASection";
 import { NEWS_BG_WHITE, NEWS_INNER, NEWS_SECTION_PAD } from "../constants";
 
 type Props = {
@@ -88,7 +88,7 @@ export default function NewsDetailView({
       </article>
 
       <NewsDetailRelatedArticles items={relatedArticles} />
-      <NewsCTASection />
+      <CTASection />
     </>
   );
 }

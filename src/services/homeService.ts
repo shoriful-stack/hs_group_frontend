@@ -463,7 +463,7 @@ export function mapSiteSettings(
       favicon: safeMediaUrl(settings.favicon),
       logoHeader,
       logoFooter,
-      phone: contact.primary_phone || contact.secondary_phone || "",
+      phone: contact.primary_phone || "",
       email: contact.primary_email || contact.secondary_email || "",
       address: stripHtml(contact.address),
       social: Array.isArray(data.social_links)

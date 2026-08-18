@@ -10,7 +10,7 @@ import ContactFormSection from "@/components/sections/contact/ContactFormSection
 import ContactDepartmentsSection from "@/components/sections/contact/ContactDepartmentsSection";
 import ContactMapSection from "@/components/sections/contact/ContactMapSection";
 import ContactFAQSection from "@/components/sections/contact/ContactFAQSection";
-import ContactCTASection from "@/components/sections/contact/ContactCTASection";
+import CTASection from "@/components/sections/CTASection";
 import { siteConfig } from "@/data/site";
 
 const contactDescription = `Contact ${siteConfig.name} for engineering consultations, project inquiries, quotations, and technical support across power, telecom, renewable energy, and infrastructure.`;
@@ -51,7 +51,7 @@ export default function ContactPage() {
         <ContactDepartmentsSection />
         <ContactMapSection />
         <ContactFAQSection />
-        <ContactCTASection />
+        <CTASection />
       </main>
       <Footer />
     </>

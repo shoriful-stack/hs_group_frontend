@@ -47,6 +47,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import type { ServiceDetail } from "@/data/service-detail";
 import type { PortfolioService } from "@/data/services-page";
 import type { PortfolioProject } from "@/data/projects-page";
+import CTASection from "@/components/sections/CTASection";
 import { useAboutReducedMotion } from "@/components/sections/about/useAboutReducedMotion";
 import {
   CINEMATIC_IMAGE,
@@ -635,54 +636,7 @@ export function ServiceDetailTestimonialContact({ service }: { service: ServiceD
 }
 
 export function ServiceDetailCTA() {
-  return (
-    <section className={`${SERVICES_BG_WHITE} ${SERVICES_SECTION_PAD}`} aria-label="Service call to action">
-      <div className={SERVICES_INNER}>
-        <div className="relative overflow-hidden rounded-[32px] border border-[#e8edf2] shadow-[0_20px_56px_rgba(15,23,42,0.14)] dark:border-border">
-          <div className="absolute inset-0">
-            <Image
-              src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=1600&q=85&auto=format&fit=crop"
-              alt=""
-              fill
-              className="object-cover"
-              sizes="100vw"
-            />
-          </div>
-          <div className="absolute inset-0 bg-[#0f1729]/82" />
-          <svg className="pointer-events-none absolute inset-0 h-full w-full text-white/[0.04]" viewBox="0 0 1440 700" fill="none" aria-hidden preserveAspectRatio="xMidYMid slice">
-            <path d="M0 140H1440M0 280H1440M0 420H1440M0 560H1440" stroke="currentColor" strokeWidth="0.75" />
-            <path d="M240 0V700M480 0V700M720 0V700M960 0V700M1200 0V700" stroke="currentColor" strokeWidth="0.75" />
-          </svg>
-          <div className="relative z-10 px-6 py-16 text-center sm:px-12 sm:py-20 lg:px-16 lg:py-24">
-            <span className="mb-5 inline-block text-xs font-bold tracking-[0.24em] text-engineering-light">
-              NEXT STEP
-            </span>
-            <h2 className="mx-auto max-w-[820px] text-[32px] font-bold leading-[1.12] text-white sm:text-[40px] lg:text-[48px]">
-              Ready to Transform Your Engineering Operations?
-            </h2>
-            <p className="mx-auto mt-5 max-w-2xl text-base leading-[1.85] text-white/75 sm:text-lg">
-              Let&apos;s discuss your project requirements with HS Group&apos;s engineering team.
-            </p>
-            <div className="mt-8 flex w-full flex-col items-stretch justify-center gap-3 sm:mt-10 sm:flex-row sm:flex-wrap sm:items-center sm:justify-center sm:gap-4">
-              <Link
-                href="/contact"
-                className={`group inline-flex w-full items-center justify-center gap-2 rounded-full bg-engineering px-8 py-3.5 text-sm font-semibold text-white shadow-[0_10px_28px_rgba(33,140,206,0.28)] transition-all duration-[400ms] ease-out hover:-translate-y-0.5 hover:bg-[#1a7ab8] hover:shadow-[0_14px_36px_rgba(33,140,206,0.38)] sm:w-auto ${SERVICES_FOCUS_RING_LIGHT}`}
-              >
-                Request Consultation
-                <ArrowRight className="h-4 w-4 transition-transform duration-[400ms] group-hover:translate-x-1" />
-              </Link>
-              <Link
-                href="/contact"
-                className={`group inline-flex w-full items-center justify-center gap-2 rounded-full border-2 border-white bg-transparent px-8 py-3.5 text-sm font-semibold text-white transition-all duration-[400ms] ease-out hover:-translate-y-0.5 hover:bg-white hover:text-[#1a2b4a] sm:w-auto ${SERVICES_FOCUS_RING_LIGHT}`}
-              >
-                Get Proposal
-              </Link>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
+  return <CTASection />;
 }
 
 export function ServiceDetailSidebar({

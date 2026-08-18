@@ -13,7 +13,7 @@ import {
 } from "./CaseStudyDelivery";
 import { CaseStudyRelatedProjects } from "./CaseStudyEngage";
 import CaseStudySidebar from "./CaseStudySidebar";
-import CaseStudyCTA from "./CaseStudyCTA";
+import CTASection from "@/components/sections/CTASection";
 import {
   PROJECTS_BG_WHITE,
   PROJECTS_GRID_GAP,
@@ -57,7 +57,7 @@ export default function CaseStudyView({ study, relatedProjects }: Props) {
       <CaseStudyGallery study={study} />
       <CaseStudyAwards study={study} />
       <CaseStudyRelatedProjects items={relatedProjects} />
-      <CaseStudyCTA />
+      <CTASection />
     </>
   );
 }

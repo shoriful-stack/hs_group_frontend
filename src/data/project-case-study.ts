@@ -402,5 +402,6 @@ export function getRelatedCaseStudies(slug: string, limit = 4) {
 }
 
 export function getRelatedServicesForCase(ids: string[]) {
-  return services.filter((s) => ids.includes(s.id)).slice(0, 6);
+  if (!Array.isArray(ids) || !Array.isArray(services)) return [];
+  return services.filter((s) => s?.id && ids.includes(s.id)).slice(0, 6);
 }

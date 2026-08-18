@@ -425,7 +425,8 @@ export function getRelatedArticles(slug: string, limit = 3) {
 }
 
 export function getRelatedServices(ids: string[]) {
-  return services.filter((s) => ids.includes(s.id)).slice(0, 6);
+  if (!Array.isArray(ids) || !Array.isArray(services)) return [];
+  return services.filter((s) => s?.id && ids.includes(s.id)).slice(0, 6);
 }
 
 export function getRelatedProjects(ids: number[]) {

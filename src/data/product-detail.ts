@@ -1,5 +1,4 @@
 import { portfolioProducts, type PortfolioProduct } from "@/data/products-page";
-import { portfolioServices } from "@/data/services-page";
 import { portfolioProjects } from "@/data/projects-page";
 
 export type ProductSpecGroup = {
@@ -474,17 +473,8 @@ export function getRelatedProducts(slug: string, limit = 4) {
   ].slice(0, limit);
 }
 
-export function getRelatedServicesForProduct(slug: string, limit = 4) {
-  const current = getProductDetailBySlug(slug);
-  if (!current) return portfolioServices.slice(0, limit);
-  const related = current.relatedServices
-    .map((s) => portfolioServices.find((p) => p.slug === s))
-    .filter(Boolean);
-  if (related.length >= limit) return related.slice(0, limit) as typeof portfolioServices;
-  return [
-    ...related,
-    ...portfolioServices.filter((s) => !related.some((r) => r?.slug === s.slug)),
-  ].slice(0, limit) as typeof portfolioServices;
+export function getRelatedServicesForProduct(_slug: string, _limit = 4) {
+  return [];
 }
 
 export function getRelatedProjectsForProduct(slug: string, limit = 4) {

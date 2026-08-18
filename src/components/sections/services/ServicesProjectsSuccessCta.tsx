@@ -103,6 +103,9 @@ export function ServicesClientSuccessSection({
   logos?: PartnerLogoView[] | null;
 }) {
   const { prevRef, nextRef, mounted, init } = useNav();
+  const testimonials = Array.isArray(serviceTestimonials) ? serviceTestimonials : [];
+  const logoItems = Array.isArray(logos) ? logos : [];
+  if (testimonials.length === 0 && logoItems.length === 0) return null;
 
   return (
     <section className={`${SERVICES_BG_SURFACE} ${SERVICES_SECTION_PAD}`} aria-label="Client success">
@@ -126,9 +129,9 @@ export function ServicesClientSuccessSection({
           </div>
         </div>
 
-        {mounted && (
+        {mounted && testimonials.length > 0 ? (
           <Swiper modules={[Autoplay, Navigation, A11y, Keyboard]} onSwiper={init} spaceBetween={24} slidesPerView={1} autoplay={{ delay: 6000, disableOnInteraction: false, pauseOnMouseEnter: true }} className="mb-12 !overflow-hidden">
-            {serviceTestimonials.map((item) => (
+            {testimonials.map((item) => (
               <SwiperSlide key={item.id}>
                 <article className={`grid overflow-hidden lg:grid-cols-2 ${SERVICES_CARD}`}>
                   <div className="relative min-h-[220px] lg:min-h-[340px]">
@@ -144,12 +147,12 @@ export function ServicesClientSuccessSection({
               </SwiperSlide>
             ))}
           </Swiper>
-        )}
+        ) : null}
 
-        {Array.isArray(logos) && logos.length > 0 ? (
+        {logoItems.length > 0 ? (
         <div className="space-y-4">
-          <LogoMarquee items={logos} direction="rtl" ariaLabel="Client logos row one" />
-          <LogoMarquee items={logos} direction="ltr" ariaLabel="Client logos row two" />
+          <LogoMarquee items={logoItems} direction="rtl" ariaLabel="Client logos row one" />
+          <LogoMarquee items={logoItems} direction="ltr" ariaLabel="Client logos row two" />
         </div>
         ) : null}
       </div>
@@ -158,6 +161,9 @@ export function ServicesClientSuccessSection({
 }
 
 export function ServicesDownloadsSection() {
+  const files = Array.isArray(serviceDownloads) ? serviceDownloads : [];
+  if (files.length === 0) return null;
+
   return (
     <section id="downloads" className={`scroll-mt-24 ${SERVICES_BG_WHITE} ${SERVICES_SECTION_PAD}`} aria-labelledby="download-center">
       <div className={SERVICES_INNER}>
@@ -170,7 +176,7 @@ export function ServicesDownloadsSection() {
           />
         </div>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {serviceDownloads.map((file) => (
+          {files.map((file) => (
             <a
               key={file.id}
               href={file.href}

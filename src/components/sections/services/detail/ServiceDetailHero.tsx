@@ -13,7 +13,7 @@ import {
   Zap,
 } from "lucide-react";
 import { gsap } from "gsap";
-import type { ServiceDetail } from "@/data/service-detail";
+import type { ServiceDetailData } from "@/types/home";
 import { useAboutReducedMotion } from "@/components/sections/about/useAboutReducedMotion";
 import {
   CINEMATIC_IMAGE,
@@ -42,7 +42,7 @@ function ScrollMouseIcon() {
   );
 }
 
-export default function ServiceDetailHero({ service }: { service: ServiceDetail }) {
+export default function ServiceDetailHero({ service }: { service: ServiceDetailData }) {
   const sectionRef = useRef<HTMLElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
@@ -131,7 +131,11 @@ export default function ServiceDetailHero({ service }: { service: ServiceDetail 
       aria-label="Service details hero"
     >
       <div ref={imageRef} className="absolute inset-0">
-        <Image src={service.image} alt="" fill priority className={CINEMATIC_IMAGE} sizes="100vw" />
+        {service.image ? (
+          <Image src={service.image} alt="" fill priority className={CINEMATIC_IMAGE} sizes="100vw" />
+        ) : (
+          <div className="absolute inset-0 bg-[#0a1628]" />
+        )}
       </div>
       <div className="absolute inset-0 bg-gradient-to-t from-[#0a1628] via-[#0a1628]/65 to-[#0a1628]/35" />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_15%_90%,rgba(33,140,206,0.25),transparent_50%)]" />
@@ -189,18 +193,22 @@ export default function ServiceDetailHero({ service }: { service: ServiceDetail 
             </ol>
           </nav>
 
-          <span
-            data-hero-reveal
-            className="mb-4 inline-flex rounded-full border border-white/20 bg-white/10 px-3 py-1 text-[11px] font-bold tracking-[0.16em] text-white uppercase"
-          >
-            {service.category}
-          </span>
+          {service.category ? (
+            <span
+              data-hero-reveal
+              className="mb-4 inline-flex rounded-full border border-white/20 bg-white/10 px-3 py-1 text-[11px] font-bold tracking-[0.16em] text-white uppercase"
+            >
+              {service.category}
+            </span>
+          ) : null}
           <h1 data-hero-reveal className={`mb-4 ${SERVICES_HEADING_HERO}`}>
             {service.title}
           </h1>
-          <p data-hero-reveal className="mb-8 max-w-2xl text-base leading-[1.85] text-white/80 sm:text-lg">
-            {service.description}
-          </p>
+          {service.description ? (
+            <p data-hero-reveal className="mb-8 max-w-2xl text-base leading-[1.85] text-white/80 sm:text-lg">
+              {service.description}
+            </p>
+          ) : null}
           <div data-hero-reveal className="flex w-full flex-col gap-3 sm:flex-row sm:gap-4">
             <Link
               href="/contact"
@@ -209,12 +217,12 @@ export default function ServiceDetailHero({ service }: { service: ServiceDetail 
               Request Consultation
               <ArrowRight className="h-4 w-4 transition-transform duration-[400ms] group-hover:translate-x-1" />
             </Link>
-            <Link
+            {/* <Link
               href="/contact"
               className={`group inline-flex w-full items-center justify-center gap-2 rounded-full border-2 border-white bg-transparent px-8 py-3.5 text-sm font-semibold text-white transition-all duration-[400ms] ease-out hover:-translate-y-0.5 hover:bg-white hover:text-[#1a2b4a] sm:w-auto ${SERVICES_FOCUS_RING_LIGHT}`}
             >
               Contact Engineering
-            </Link>
+            </Link> */}
           </div>
         </div>
       </div>

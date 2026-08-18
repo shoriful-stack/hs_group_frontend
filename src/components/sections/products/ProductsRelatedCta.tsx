@@ -92,7 +92,8 @@ export function ProductsRelatedProjectsSection() {
 
 export function ProductsRelatedServicesSection() {
   const { prevRef, nextRef, mounted, init } = useNav();
-  const items = portfolioServices.slice(0, 6);
+  const items = Array.isArray(portfolioServices) ? portfolioServices.slice(0, 6) : [];
+  if (items.length === 0) return null;
 
   return (
     <section className={`${PRODUCTS_BG_SURFACE} ${PRODUCTS_SECTION_PAD}`} aria-labelledby="related-services">

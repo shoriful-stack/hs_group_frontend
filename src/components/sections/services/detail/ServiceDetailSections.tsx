@@ -45,7 +45,7 @@ import type { Swiper as SwiperType } from "swiper";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import type { ServiceDetail } from "@/data/service-detail";
-import type { PortfolioService } from "@/data/services-page";
+import type { ServiceCardView, ServiceDetailData } from "@/types/home";
 import type { PortfolioProject } from "@/data/projects-page";
 import CTASection from "@/components/sections/CTASection";
 import { useAboutReducedMotion } from "@/components/sections/about/useAboutReducedMotion";
@@ -424,10 +424,11 @@ export function ServiceDetailFaqDownloads({ service }: { service: ServiceDetail 
 export function ServiceDetailRelatedServices({
   services,
 }: {
-  services: PortfolioService[];
+  services: ServiceCardView[];
 }) {
+  const items = Array.isArray(services) ? services : [];
   const { prevRef, nextRef, mounted, init } = useNav();
-  if (!services.length) return null;
+  if (!items.length) return null;
 
   return (
     <section className={`${SERVICES_BG_SURFACE} ${SERVICES_SECTION_PAD}`} aria-labelledby="related-services">
@@ -473,21 +474,25 @@ export function ServiceDetailRelatedServices({
             breakpoints={{ 640: { slidesPerView: 2 }, 1024: { slidesPerView: 3 } }}
             className="!overflow-hidden"
           >
-            {services.map((s) => (
-              <SwiperSlide key={s.id} className="!h-auto">
+            {items.map((s) => (
+              <SwiperSlide key={s.slug} className="!h-auto">
                 <Link
                   href={`/services/${s.slug}`}
                   className={`group flex h-full flex-col overflow-hidden ${SERVICES_CARD} ${SERVICES_CARD_HOVER} ${SERVICES_FOCUS_RING}`}
                 >
                   <div className="relative aspect-[16/10] overflow-hidden">
-                    <Image
-                      src={s.image}
-                      alt={s.title}
-                      fill
-                      className={`${CINEMATIC_IMAGE} transition-transform duration-500 group-hover:scale-[1.04]`}
-                      sizes="(max-width: 640px) 90vw, 33vw"
-                      loading="lazy"
-                    />
+                    {s.image ? (
+                      <Image
+                        src={s.image}
+                        alt={s.title}
+                        fill
+                        className={`${CINEMATIC_IMAGE} transition-transform duration-500 group-hover:scale-[1.04]`}
+                        sizes="(max-width: 640px) 90vw, 33vw"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <div className="absolute inset-0 bg-[#0a1628]" />
+                    )}
                   </div>
                   <div className="flex flex-1 flex-col p-5 sm:p-6">
                     <p className="mb-1 text-xs font-semibold tracking-wide text-engineering uppercase">
@@ -516,7 +521,7 @@ export function ServiceDetailRelated({
   services,
   projects,
 }: {
-  services: PortfolioService[];
+  services: ServiceCardView[];
   projects: PortfolioProject[];
 }) {
   return (
@@ -643,9 +648,11 @@ export function ServiceDetailSidebar({
   service,
   related,
 }: {
-  service: ServiceDetail;
-  related: PortfolioService[];
+  service: ServiceDetailData;
+  related: ServiceCardView[];
 }) {
+  const facts = Array.isArray(service.quickFacts) ? service.quickFacts : [];
+  const relatedItems = Array.isArray(related) ? related : [];
   const nav: { href: string; label: string; hint: string; icon: LucideIcon }[] = [
     { href: "#executive-overview", label: "Overview", hint: "Solution summary", icon: ListTree },
     { href: "#key-benefits", label: "Benefits", hint: "Client outcomes", icon: Lightbulb },
@@ -705,6 +712,7 @@ export function ServiceDetailSidebar({
         </nav>
       </div>
 
+      {facts.length > 0 ? (
       <div className={`${SERVICES_CARD} overflow-hidden`}>
         <div className="border-b border-[#e8edf2] px-5 py-4 dark:border-border">
           <p className="text-[11px] font-bold tracking-[0.2em] text-engineering uppercase">
@@ -715,7 +723,7 @@ export function ServiceDetailSidebar({
           </h2>
         </div>
         <dl className="divide-y divide-[#e8edf2] dark:divide-border">
-          {service.quickFacts.map((f) => (
+          {facts.map((f) => (
             <div key={f.label} className="flex items-center justify-between gap-3 px-5 py-3.5">
               <dt className="text-[11px] font-bold tracking-[0.12em] text-[#94a3b8] uppercase">
                 {f.label}
@@ -725,7 +733,9 @@ export function ServiceDetailSidebar({
           ))}
         </dl>
       </div>
+      ) : null}
 
+      {relatedItems.length > 0 ? (
       <div className={`${SERVICES_CARD} overflow-hidden`}>
         <div className="border-b border-[#e8edf2] px-5 py-4 dark:border-border">
           <p className="text-[11px] font-bold tracking-[0.2em] text-engineering uppercase">
@@ -736,20 +746,24 @@ export function ServiceDetailSidebar({
           </h2>
         </div>
         <ul className="space-y-3 p-4">
-          {related.slice(0, 3).map((s) => (
-            <li key={s.id}>
+          {relatedItems.slice(0, 3).map((s) => (
+            <li key={s.slug}>
               <Link
                 href={`/services/${s.slug}`}
                 className={`group flex gap-3 rounded-[18px] border border-[#e8edf2] bg-[#fafbfd] p-2.5 transition-all duration-400 hover:-translate-y-0.5 hover:border-engineering hover:bg-white hover:shadow-[0_12px_28px_rgba(33,140,206,0.1)] dark:border-border dark:bg-surface ${SERVICES_FOCUS_RING}`}
               >
                 <div className="relative h-[72px] w-[72px] shrink-0 overflow-hidden rounded-[14px]">
-                  <Image
-                    src={s.image}
-                    alt=""
-                    fill
-                    className={`${CINEMATIC_IMAGE} transition-transform duration-500 group-hover:scale-[1.06]`}
-                    sizes="72px"
-                  />
+                  {s.image ? (
+                    <Image
+                      src={s.image}
+                      alt=""
+                      fill
+                      className={`${CINEMATIC_IMAGE} transition-transform duration-500 group-hover:scale-[1.06]`}
+                      sizes="72px"
+                    />
+                  ) : (
+                    <div className="absolute inset-0 bg-[#0a1628]" />
+                  )}
                 </div>
                 <div className="min-w-0 flex-1 py-0.5">
                   <span className="mb-1 inline-block text-[10px] font-bold tracking-[0.14em] text-engineering uppercase">
@@ -778,6 +792,7 @@ export function ServiceDetailSidebar({
           </Link>
         </div>
       </div>
+      ) : null}
 
       <div className={`${SERVICES_CARD} border-engineering/20 bg-engineering/[0.03] p-5`}>
         <h2 className="mb-3 text-sm font-bold text-[#1a2b4a] dark:text-foreground">Contact Expert</h2>

@@ -3,14 +3,18 @@ import { apiClient } from "@/lib/apiClient";
 import { toAbsoluteStorageUrl } from "@/lib/storage";
 import type {
   AboutStats,
+  ContactInfo,
   FeatureCardView,
   FeatureItem,
+  GeneralSettings,
   HeroItem,
   HeroSlideView,
   HomeStaticData,
   HomeStaticDataResponse,
   PartnerLogo,
   PartnerLogoView,
+  SiteSettingsView,
+  SocialLink,
 } from "@/types/home";
 
 export const EMPTY_ABOUT_STATS: AboutStats = {
@@ -21,11 +25,45 @@ export const EMPTY_ABOUT_STATS: AboutStats = {
   stats: [],
 };
 
+export const EMPTY_GENERAL_SETTINGS: GeneralSettings = {
+  title: null,
+  favicon: null,
+  logo_header: null,
+  logo_footer: null,
+  description: null,
+  keywords: null,
+};
+
+export const EMPTY_CONTACT_INFO: ContactInfo = {
+  address: null,
+  primary_phone: null,
+  secondary_phone: null,
+  primary_email: null,
+  secondary_email: null,
+  whatsapp_number: null,
+};
+
 export const EMPTY_HOME_STATIC_DATA: HomeStaticData = {
   hero: [],
   about_stats: EMPTY_ABOUT_STATS,
   features: [],
   partners: [],
+  general_settings: EMPTY_GENERAL_SETTINGS,
+  contact_us: EMPTY_CONTACT_INFO,
+  social_links: [],
+};
+
+export const EMPTY_SITE_SETTINGS: SiteSettingsView = {
+  title: "",
+  description: "",
+  keywords: [],
+  favicon: null,
+  logoHeader: null,
+  logoFooter: null,
+  phone: "",
+  email: "",
+  address: "",
+  social: [],
 };
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -135,6 +173,52 @@ function normalizePartners(items: unknown): PartnerLogo[] {
   });
 }
 
+function normalizeGeneralSettings(value: unknown): GeneralSettings {
+  if (!isRecord(value)) return EMPTY_GENERAL_SETTINGS;
+
+  return {
+    id: asNumber(value.id) || undefined,
+    title: asString(value.title),
+    favicon: asString(value.favicon),
+    logo_header: asString(value.logo_header),
+    logo_footer: asString(value.logo_footer),
+    description: asString(value.description),
+    keywords: asString(value.keywords),
+  };
+}
+
+function normalizeContactInfo(value: unknown): ContactInfo {
+  const record = Array.isArray(value)
+    ? value.find((item): item is Record<string, unknown> => isRecord(item))
+    : isRecord(value)
+      ? value
+      : null;
+
+  if (!record) return EMPTY_CONTACT_INFO;
+
+  return {
+    id: asNumber(record.id) || undefined,
+    address: asString(record.address),
+    primary_phone: asString(record.primary_phone),
+    secondary_phone: asString(record.secondary_phone),
+    primary_email: asString(record.primary_email),
+    secondary_email: asString(record.secondary_email),
+    whatsapp_number: asString(record.whatsapp_number),
+  };
+}
+
+function normalizeSocialLinks(items: unknown): SocialLink[] {
+  if (!Array.isArray(items)) return [];
+
+  return items.flatMap((item) => {
+    if (!isRecord(item)) return [];
+    const id = asNumber(item.id);
+    const link = asString(item.link);
+    if (!id || !link) return [];
+    return [{ id, icon: asString(item.icon), link }];
+  });
+}
+
 export function normalizeHomeStaticData(payload: unknown): HomeStaticData {
   if (!isRecord(payload)) return EMPTY_HOME_STATIC_DATA;
 
@@ -143,6 +227,9 @@ export function normalizeHomeStaticData(payload: unknown): HomeStaticData {
     about_stats: normalizeAboutStats(payload.about_stats),
     features: normalizeFeatures(payload.features),
     partners: normalizePartners(payload.partners),
+    general_settings: normalizeGeneralSettings(payload.general_settings),
+    contact_us: normalizeContactInfo(payload.contact_us),
+    social_links: normalizeSocialLinks(payload.social_links),
   };
 }
 
@@ -236,6 +323,60 @@ export function mapPartnerLogos(items: PartnerLogo[]): PartnerLogoView[] {
   }));
 }
 
+function parseKeywords(value: string | null): string[] {
+  if (!value) return [];
+  return value
+    .split(/[,|]/)
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+function socialMeta(icon: string | null, link: string): { label: string; icon: string } {
+  const hay = `${icon ?? ""} ${link}`.toLowerCase();
+  if (hay.includes("linkedin")) return { label: "LinkedIn", icon: "linkedin" };
+  if (hay.includes("facebook")) return { label: "Facebook", icon: "facebook" };
+  if (hay.includes("youtube") || hay.includes("youtu.be")) return { label: "YouTube", icon: "youtube" };
+  if (hay.includes("instagram")) return { label: "Instagram", icon: "instagram" };
+  if (hay.includes("twitter") || hay.includes("x.com")) return { label: "Twitter", icon: "twitter" };
+  return { label: stripHtml(icon) || "Social", icon: "link" };
+}
+
+function safeMediaUrl(path: string | null | undefined): string | null {
+  if (!path) return null;
+  try {
+    return toAbsoluteStorageUrl(path) || null;
+  } catch {
+    return null;
+  }
+}
+
+export function mapSiteSettings(data: HomeStaticData | null | undefined): SiteSettingsView {
+  if (!data) return EMPTY_SITE_SETTINGS;
+
+  const settings = data.general_settings ?? EMPTY_GENERAL_SETTINGS;
+  const contact = data.contact_us ?? EMPTY_CONTACT_INFO;
+  const logoHeader = safeMediaUrl(settings.logo_header);
+  const logoFooter = safeMediaUrl(settings.logo_footer) || logoHeader;
+
+  return {
+    title: stripHtml(settings.title),
+    description: stripHtml(settings.description),
+    keywords: parseKeywords(settings.keywords),
+    favicon: safeMediaUrl(settings.favicon),
+    logoHeader,
+    logoFooter,
+    phone: contact.primary_phone || contact.secondary_phone || "",
+    email: contact.primary_email || contact.secondary_email || "",
+    address: stripHtml(contact.address),
+    social: (data.social_links ?? []).flatMap((item) => {
+      const href = item.link?.trim();
+      if (!href) return [];
+      const meta = socialMeta(item.icon, href);
+      return [{ label: meta.label, href, icon: meta.icon }];
+    }),
+  };
+}
+
 export const getHomeStaticData = cache(async (): Promise<HomeStaticData> => {
   try {
     const data = await apiClient.get<HomeStaticDataResponse>("home/static-data", {
@@ -244,5 +385,13 @@ export const getHomeStaticData = cache(async (): Promise<HomeStaticData> => {
     return normalizeHomeStaticData(data);
   } catch {
     return EMPTY_HOME_STATIC_DATA;
+  }
+});
+
+export const getSiteSettings = cache(async (): Promise<SiteSettingsView> => {
+  try {
+    return mapSiteSettings(await getHomeStaticData());
+  } catch {
+    return EMPTY_SITE_SETTINGS;
   }
 });

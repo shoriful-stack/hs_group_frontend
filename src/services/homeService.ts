@@ -11,6 +11,9 @@ import type {
   HeroSlideView,
   HomeStaticData,
   HomeStaticDataResponse,
+  LayoutDataResponse,
+  LayoutNavigation,
+  NavLinkItem,
   PartnerLogo,
   PartnerLogoView,
   SiteSettingsView,
@@ -64,6 +67,15 @@ export const EMPTY_SITE_SETTINGS: SiteSettingsView = {
   email: "",
   address: "",
   social: [],
+  latestProducts: [],
+  productCategories: [],
+  serviceCategories: [],
+};
+
+const EMPTY_NAVIGATION: LayoutNavigation = {
+  latest_products: [],
+  product_categories: [],
+  service_categories: [],
 };
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -350,13 +362,54 @@ function safeMediaUrl(path: string | null | undefined): string | null {
   }
 }
 
-export function mapSiteSettings(data: HomeStaticData | null | undefined): SiteSettingsView {
+function normalizeNavLinks(
+  items: unknown,
+  nameKey: "title" | "name",
+  toHref: (slug: string) => string
+): NavLinkItem[] {
+  if (!Array.isArray(items)) return [];
+
+  return items.flatMap((item) => {
+    if (!isRecord(item)) return [];
+    const id = asNumber(item.id);
+    const slug = asString(item.slug);
+    const name = asString(item[nameKey]) ?? asString(item.name) ?? asString(item.title);
+    if (!id || !slug || !name) return [];
+    return [{ id, name: stripHtml(name), slug, href: toHref(slug) }];
+  });
+}
+
+function normalizeNavigation(value: unknown): Pick<
+  SiteSettingsView,
+  "latestProducts" | "productCategories" | "serviceCategories"
+> {
+  const nav = isRecord(value) ? value : EMPTY_NAVIGATION;
+
+  return {
+    latestProducts: normalizeNavLinks(nav.latest_products, "title", (slug) => `/products/${slug}`),
+    productCategories: normalizeNavLinks(
+      nav.product_categories,
+      "name",
+      (slug) => `/products?category=${encodeURIComponent(slug)}`
+    ),
+    serviceCategories: normalizeNavLinks(
+      nav.service_categories,
+      "name",
+      (slug) => `/services?category=${encodeURIComponent(slug)}`
+    ),
+  };
+}
+
+export function mapSiteSettings(
+  data: HomeStaticData | LayoutDataResponse | null | undefined
+): SiteSettingsView {
   if (!data) return EMPTY_SITE_SETTINGS;
 
   const settings = data.general_settings ?? EMPTY_GENERAL_SETTINGS;
   const contact = data.contact_us ?? EMPTY_CONTACT_INFO;
   const logoHeader = safeMediaUrl(settings.logo_header);
   const logoFooter = safeMediaUrl(settings.logo_footer) || logoHeader;
+  const navigation = normalizeNavigation("navigation" in data ? data.navigation : null);
 
   return {
     title: stripHtml(settings.title),
@@ -374,6 +427,7 @@ export function mapSiteSettings(data: HomeStaticData | null | undefined): SiteSe
       const meta = socialMeta(item.icon, href);
       return [{ label: meta.label, href, icon: meta.icon }];
     }),
+    ...navigation,
   };
 }
 
@@ -390,7 +444,10 @@ export const getHomeStaticData = cache(async (): Promise<HomeStaticData> => {
 
 export const getSiteSettings = cache(async (): Promise<SiteSettingsView> => {
   try {
-    return mapSiteSettings(await getHomeStaticData());
+    const data = await apiClient.get<LayoutDataResponse>("layout", {
+      next: { tags: ["layout"] },
+    });
+    return mapSiteSettings(data);
   } catch {
     return EMPTY_SITE_SETTINGS;
   }

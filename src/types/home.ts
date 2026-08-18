@@ -77,6 +77,26 @@ export interface HomeStaticDataResponse {
 
 export type HomeStaticData = HomeStaticDataResponse;
 
+export interface NavLinkItem {
+  id: number;
+  name: string;
+  slug: string;
+  href: string;
+}
+
+export interface LayoutNavigation {
+  latest_products: Array<{ id: number; title: string; slug: string }>;
+  product_categories: Array<{ id: number; name: string; slug: string }>;
+  service_categories: Array<{ id: number; name: string; slug: string }>;
+}
+
+export interface LayoutDataResponse {
+  general_settings: GeneralSettings | null;
+  contact_us: ContactInfo | null;
+  social_links: SocialLink[];
+  navigation: LayoutNavigation;
+}
+
 export interface HeroSlideView {
   id: number;
   title: string;
@@ -115,4 +135,7 @@ export interface SiteSettingsView {
   email: string;
   address: string;
   social: SocialLinkView[];
+  latestProducts: NavLinkItem[];
+  productCategories: NavLinkItem[];
+  serviceCategories: NavLinkItem[];
 }

@@ -117,11 +117,7 @@ export const productsSection = {
 export const navLinks = [
   { label: "Home", href: "/" },
   { label: "About", href: "/about" },
-  {
-    label: "Products",
-    href: "/products",
-    children: products.map((p) => ({ label: p.title, href: `/products#${p.id}` })),
-  },
+  { label: "Products", href: "/products" },
   { label: "Services", href: "/services" },
   { label: "Projects", href: "/projects" },
   { label: "News & Media", href: "/blog" },

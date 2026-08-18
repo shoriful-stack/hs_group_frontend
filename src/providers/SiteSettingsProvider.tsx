@@ -14,6 +14,9 @@ const EMPTY_SETTINGS: SiteSettingsView = {
   email: "",
   address: "",
   social: [],
+  latestProducts: [],
+  productCategories: [],
+  serviceCategories: [],
 };
 
 const SiteSettingsContext = createContext<SiteSettingsView>(EMPTY_SETTINGS);
@@ -25,10 +28,23 @@ export function SiteSettingsProvider({
   settings: SiteSettingsView;
   children: React.ReactNode;
 }) {
+  const value: SiteSettingsView = {
+    ...EMPTY_SETTINGS,
+    ...settings,
+    social: Array.isArray(settings?.social) ? settings.social : [],
+    latestProducts: Array.isArray(settings?.latestProducts) ? settings.latestProducts : [],
+    productCategories: Array.isArray(settings?.productCategories) ? settings.productCategories : [],
+    serviceCategories: Array.isArray(settings?.serviceCategories) ? settings.serviceCategories : [],
+    phone: settings?.phone ?? "",
+    email: settings?.email ?? "",
+    address: settings?.address ?? "",
+    title: settings?.title ?? "",
+    description: settings?.description ?? "",
+    keywords: Array.isArray(settings?.keywords) ? settings.keywords : [],
+  };
+
   return (
-    <SiteSettingsContext.Provider value={settings ?? EMPTY_SETTINGS}>
-      {children}
-    </SiteSettingsContext.Provider>
+    <SiteSettingsContext.Provider value={value}>{children}</SiteSettingsContext.Provider>
   );
 }
 

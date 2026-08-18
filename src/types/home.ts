@@ -53,16 +53,9 @@ export interface HeroSlideView {
   title: string;
   subtitle?: string;
   description?: string;
-  image: string;
+  image?: string;
   url?: string | null;
   video?: string;
-  videoLabel?: string;
-  heroContent?: {
-    headline: string[];
-    subtitle: string;
-    primaryCta: { label: string; href: string };
-    secondaryCta: { label: string; href: string };
-  };
 }
 
 export type FeatureCardView =

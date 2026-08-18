@@ -61,7 +61,7 @@ function normalizeHero(items: unknown): HeroItem[] {
         serial_no: asNumber(item.serial_no, 0),
       },
     ];
-  });
+  }).sort((a, b) => a.serial_no - b.serial_no);
 }
 
 function normalizeAboutStats(value: unknown): AboutStats {
@@ -171,48 +171,32 @@ export function toParagraphs(value: string | null | undefined): string[] {
     .filter(Boolean);
 }
 
-function splitHeadline(title: string): string[] {
-  const parts = title
-    .split(/,(?=\s)/)
-    .map((part) => part.trim())
-    .filter(Boolean);
-  return parts.length > 1 ? parts : [title];
+function toHref(value: string | null | undefined): string | undefined {
+  const trimmed = value?.trim();
+  if (!trimmed) return undefined;
+  if (/^(https?:\/\/|mailto:|tel:|#|\/)/i.test(trimmed)) return trimmed;
+  return `/${trimmed}`;
 }
 
 export function mapHeroSlides(items: HeroItem[]): HeroSlideView[] {
-  return items.flatMap((item, index) => {
-    const image = toAbsoluteStorageUrl(item.image);
-    const video = toAbsoluteStorageUrl(item.video);
-    if (!image && !video) return [];
+  return [...items]
+    .sort((a, b) => a.serial_no - b.serial_no)
+    .flatMap((item) => {
+      const image = toAbsoluteStorageUrl(item.image);
+      const video = toAbsoluteStorageUrl(item.video);
+      if (!image && !video) return [];
 
-    const title = item.title ?? "";
-    const slide: HeroSlideView = {
-      id: item.id,
-      title,
-      subtitle: item.sub_title ?? undefined,
-      description: item.content ?? undefined,
-      image: image || video,
-      url: item.url,
-      video: video || undefined,
-    };
-
-    if (index === 0) {
-      slide.heroContent = {
-        headline: splitHeadline(title || "Engineering Excellence"),
-        subtitle: stripHtml(item.sub_content || item.content || ""),
-        primaryCta: {
-          label: "Explore Our Journey",
-          href: item.url || "/about",
+      return [
+        {
+          id: item.id,
+          title: stripHtml(item.title),
+          subtitle: stripHtml(item.sub_title) || undefined,
+          description: stripHtml(item.sub_content) || undefined,
+          ...(video ? { video } : { image }),
+          url: toHref(item.url),
         },
-        secondaryCta: {
-          label: "Contact Us",
-          href: "/contact",
-        },
-      };
-    }
-
-    return [slide];
-  });
+      ];
+    });
 }
 
 export function mapAboutCollageImages(about: AboutStats): string[] {

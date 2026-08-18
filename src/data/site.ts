@@ -14,45 +14,6 @@ export const siteConfig = {
   },
 };
 
-export const heroSlides = [
-  {
-    id: 1,
-    title: "Powering Infrastructure",
-    subtitle: "End-to-End Engineering Solutions",
-    description:
-      "From power generation to smart city deployment — HS Group delivers world-class engineering infrastructure for a connected future.",
-    image: "https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?w=1920&q=80",
-    cta: { label: "Explore Solutions", href: "/services" },
-    heroContent: {
-      headline: ["Engineering Excellence,", "Powering the Future."],
-      subtitle:
-        "With a legacy since 2010, HS Group delivers innovative engineering, power, telecom, civil infrastructure, and smart technology solutions across Bangladesh and beyond.",
-      primaryCta: { label: "Explore Our Journey", href: "/about" },
-      secondaryCta: { label: "Contact Us", href: "/contact" },
-    },
-  },
-  {
-    id: 2,
-    title: "Solar & Renewable Energy",
-    subtitle: "Sustainable Power Systems",
-    description:
-      "Harnessing clean energy with advanced solar solutions, battery systems, and smart grid technology for tomorrow's world.",
-    image: "https://images.unsplash.com/photo-1509391366360-2e959784a276?w=1920&q=80",
-    video: "/videos/tower-antenna.mp4",
-    videoLabel: "Telecom In Motion",
-    cta: { label: "View Products", href: "/products" },
-  },
-  {
-    id: 3,
-    title: "Smart Infrastructure",
-    subtitle: "IoT & Telecom Excellence",
-    description:
-      "Building the backbone of digital transformation with telecom infrastructure, IoT solutions, and smart city systems.",
-    image: "/images/hero/slider-3.png",
-    cta: { label: "Our Projects", href: "/projects" },
-  },
-];
-
 export const products = [
   {
     id: "cabinet-server-rack",

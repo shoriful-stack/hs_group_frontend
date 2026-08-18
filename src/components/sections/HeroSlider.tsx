@@ -3,6 +3,7 @@
 import { useRef, useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, EffectFade } from "swiper/modules";
 import type { Swiper as SwiperType } from "swiper";
@@ -11,6 +12,15 @@ import type { HeroSlideView } from "@/types/home";
 
 import "swiper/css";
 import "swiper/css/effect-fade";
+
+const OVERLAY =
+  "absolute inset-0 bg-gradient-to-t from-[#0a1628]/85 via-[#0a1628]/30 to-transparent";
+
+function goToSlide(swiper: SwiperType | null, index: number, loop: boolean) {
+  if (!swiper) return;
+  if (loop) swiper.slideToLoop(index);
+  else swiper.slideTo(index);
+}
 
 function SlideBackground({
   slide,
@@ -23,7 +33,7 @@ function SlideBackground({
 
   useEffect(() => {
     const video = videoRef.current;
-    if (!video || !("video" in slide) || !slide.video) return;
+    if (!video || !slide.video) return;
 
     const playVideo = () => {
       video.play().catch(() => {});
@@ -36,7 +46,7 @@ function SlideBackground({
     return () => video.removeEventListener("canplaythrough", playVideo);
   }, [slide]);
 
-  if ("video" in slide && slide.video) {
+  if (slide.video) {
     return (
       <video
         ref={videoRef}
@@ -45,7 +55,6 @@ function SlideBackground({
         loop
         playsInline
         preload="auto"
-        poster={slide.image}
         controls={false}
         disablePictureInPicture
         controlsList="nodownload nofullscreen noremoteplayback"
@@ -56,6 +65,8 @@ function SlideBackground({
       </video>
     );
   }
+
+  if (!slide.image) return null;
 
   return (
     <Image
@@ -69,53 +80,56 @@ function SlideBackground({
   );
 }
 
-function HeroSlideOneContent({
-  content,
-}: {
-  content: NonNullable<HeroSlideView["heroContent"]>;
-}) {
+function HeroSlideContent({ slide }: { slide: HeroSlideView }) {
   return (
     <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex justify-start pb-24 pl-4 sm:pb-32 sm:pl-8 lg:pb-36 lg:pl-12">
-      <div className="pointer-events-auto max-w-2xl">
-        <motion.h2
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
-          className="text-3xl font-bold leading-[1.1] text-white sm:text-4xl lg:text-5xl"
-        >
-          {content.headline.map((line) => (
-            <span key={line} className="block">
-              {line}
-            </span>
-          ))}
-        </motion.h2>
-
-        <motion.p
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-          className="mt-4 max-w-xl text-sm leading-relaxed text-white/85 sm:text-base"
-        >
-          {content.subtitle}
-        </motion.p>
-
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
-          className="mt-6 flex flex-wrap gap-3"
-        >
-          <Link href={content.primaryCta.href} className="btn-primary group">
-            {content.primaryCta.label}
-            <span className="sr-only"> primary</span>
-          </Link>
-          <Link
-            href={content.secondaryCta.href}
-            className="inline-flex items-center gap-2 rounded-full border-2 border-white/60 px-6 py-2.5 text-sm font-semibold text-white transition-all duration-[400ms] ease-out hover:-translate-y-0.5 hover:border-white hover:bg-white hover:text-brand-dark"
+      <div className="pointer-events-auto max-w-3xl">
+        {slide.title ? (
+          <motion.h2
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+            className="text-[34px] font-bold leading-[1.1] tracking-tight text-white sm:text-[40px] md:text-[44px] lg:text-[56px]"
           >
-            {content.secondaryCta.label}
-          </Link>
-        </motion.div>
+            {slide.title}
+          </motion.h2>
+        ) : null}
+
+        {slide.subtitle ? (
+          <motion.p
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.18, ease: [0.22, 1, 0.36, 1] }}
+            className="mt-4 text-lg font-medium leading-snug tracking-tight text-white/85 sm:text-xl lg:text-[22px]"
+          >
+            {slide.subtitle}
+          </motion.p>
+        ) : null}
+
+        {slide.description ? (
+          <motion.p
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.26, ease: [0.22, 1, 0.36, 1] }}
+            className="mt-5 max-w-2xl text-base leading-[1.8] text-white/75 sm:text-[17px] lg:text-lg"
+          >
+            {slide.description}
+          </motion.p>
+        ) : null}
+
+        {slide.url ? (
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.34, ease: [0.22, 1, 0.36, 1] }}
+            className="mt-8"
+          >
+            <Link href={slide.url} className="btn-primary group">
+              Explore Our Journey
+              <ArrowRight className="h-4 w-4 transition-transform duration-[400ms] group-hover:translate-x-1" />
+            </Link>
+          </motion.div>
+        ) : null}
       </div>
     </div>
   );
@@ -139,18 +153,29 @@ export default function HeroSlider({ slides }: { slides: HeroSlideView[] }) {
       {/* SSR-safe static first slide */}
       {!mounted && firstSlide && (
         <div className="absolute inset-0">
-          <Image
-            src={firstSlide.image}
-            alt={firstSlide.title}
-            fill
-            priority
-            className="object-cover object-center"
-            sizes="100vw"
-          />
-          <div className="absolute inset-0 bg-black/20" />
-          {firstSlide.heroContent && (
-            <HeroSlideOneContent content={firstSlide.heroContent} />
-          )}
+          {firstSlide.video ? (
+            <video
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="auto"
+              className="absolute inset-0 h-full w-full object-cover"
+            >
+              <source src={firstSlide.video} type="video/mp4" />
+            </video>
+          ) : firstSlide.image ? (
+            <Image
+              src={firstSlide.image}
+              alt={firstSlide.title}
+              fill
+              priority
+              className="object-cover object-center"
+              sizes="100vw"
+            />
+          ) : null}
+          <div className={OVERLAY} />
+          <HeroSlideContent slide={firstSlide} />
         </div>
       )}
 
@@ -171,17 +196,8 @@ export default function HeroSlider({ slides }: { slides: HeroSlideView[] }) {
             <SwiperSlide key={slide.id} className="!h-full">
               <div className="relative h-full min-h-[520px] w-full">
                 <SlideBackground slide={slide} priority={index === 0} />
-                <div className="absolute inset-0 bg-black/20" />
-                {slide.heroContent && activeIndex === index && (
-                  <HeroSlideOneContent content={slide.heroContent} />
-                )}
-                {"videoLabel" in slide && slide.videoLabel && activeIndex === index && (
-                  <div className="absolute bottom-24 left-4 z-10 sm:left-8 lg:left-12">
-                    <span className="text-xs font-medium tracking-[0.2em] text-white/70 uppercase">
-                      {slide.videoLabel}
-                    </span>
-                  </div>
-                )}
+                <div className={OVERLAY} />
+                {activeIndex === index && <HeroSlideContent slide={slide} />}
               </div>
             </SwiperSlide>
           ))}
@@ -205,7 +221,7 @@ export default function HeroSlider({ slides }: { slides: HeroSlideView[] }) {
               <button
                 key={i}
                 type="button"
-                onClick={() => swiperRef.current?.slideToLoop(i)}
+                onClick={() => goToSlide(swiperRef.current, i, total > 1)}
                 className="group relative h-1 w-10 overflow-hidden rounded-full bg-white/30 sm:w-14"
                 aria-label={`Go to slide ${i + 1}`}
               >
@@ -226,14 +242,18 @@ export default function HeroSlider({ slides }: { slides: HeroSlideView[] }) {
             <button
               key={slide.id}
               type="button"
-              onClick={() => swiperRef.current?.slideToLoop(i)}
+              onClick={() => goToSlide(swiperRef.current, i, total > 1)}
               className={`relative h-16 w-24 overflow-hidden rounded-lg border-2 transition-all lg:h-20 lg:w-32 ${
                 i === activeIndex
                   ? "border-white opacity-100"
                   : "border-transparent opacity-50 hover:opacity-80"
               }`}
             >
-              <Image src={slide.image} alt="" fill className="object-cover" sizes="128px" />
+              {slide.image ? (
+                <Image src={slide.image} alt="" fill className="object-cover" sizes="128px" />
+              ) : (
+                <span className="absolute inset-0 bg-[#0a1628]" />
+              )}
             </button>
           ))}
         </div>
